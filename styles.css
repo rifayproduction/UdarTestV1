@@ -1,67 +1,396 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Ударения</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=8">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-  <main class="app-shell">
-    <section class="screen screen-home active" data-screen="test">
-      <div class="hero" aria-label="Главный экран">
-        <div class="brand-mark">У</div>
-        <h1>Ударения</h1>
-        <p>Русского языка</p>
-      </div>
+:root {
+  --bg: #343434;
+  --text: #f7f7f2;
+  --muted: rgba(247, 247, 242, 0.78);
+  --accent: #ffd34d;
+  --accent-pressed: #f1c13f;
+  --accent-text: #343434;
+  --tab-bg: #050505;
+  --tab-active: #2d2d2d;
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-strong: rgba(255, 255, 255, 0.16);
+  --green: #3fd47c;
+  --red: #ff5c5c;
+  --shadow: rgba(0, 0, 0, 0.28);
+}
 
-      <div class="center-stage">
-        <button class="start-button" id="startTestButton" type="button">Начать тест</button>
-      </div>
-    </section>
+* {
+  box-sizing: border-box;
+}
 
-    <section class="screen screen-quiz" data-screen="quiz" hidden>
-      <div class="quiz-head">
-        <span id="quizCounter">1 из 3</span>
-        <span>Выберите правильное ударение</span>
-      </div>
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
 
-      <div class="quiz-card">
-        <div class="answer-grid" id="answerGrid"></div>
-      </div>
-    </section>
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 34%),
+    var(--bg);
+  color: var(--text);
+}
 
-    <section class="screen screen-dictionary" data-screen="dictionary" hidden>
-      <div class="dictionary-header">
-        <label class="search-field">
-          <span>Поиск</span>
-          <input id="dictionarySearch" type="search" placeholder="Введите слово" autocomplete="off">
-        </label>
-      </div>
+[hidden] {
+  display: none !important;
+}
 
-      <div class="dictionary-results" id="dictionaryResults" hidden></div>
-    </section>
-  </main>
+button,
+input {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  <nav class="tab-bar" aria-label="Навигация">
-    <button class="tab-item active" type="button" data-tab="test">
-      <span class="tab-icon" aria-hidden="true">Т</span>
-      <span>Тест</span>
-    </button>
-    <button class="tab-item" type="button" data-tab="favorites">
-      <span class="tab-icon" aria-hidden="true">★</span>
-      <span>Избранное</span>
-    </button>
-    <button class="tab-item" type="button" data-tab="dictionary">
-      <span class="tab-icon" aria-hidden="true">А</span>
-      <span>Словарь</span>
-    </button>
-  </nav>
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: max(44px, env(safe-area-inset-top)) 22px calc(112px + env(safe-area-inset-bottom));
+}
 
-  <script src="app.js?v=8"></script>
-</body>
-</html>
+.screen {
+  min-height: calc(100vh - 156px);
+  min-height: calc(100dvh - 156px);
+}
+
+.screen-quiz.active {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.screen-home.active {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+}
+
+.hero {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.brand-mark {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--accent);
+  font-size: 34px;
+  font-weight: 800;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 46px;
+  line-height: 1.04;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.center-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.start-button {
+  width: min(100%, 300px);
+  min-height: 64px;
+  border: 0;
+  border-radius: 22px;
+  padding: 0 28px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 16px 32px var(--shadow);
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.start-button:active {
+  transform: translateY(2px) scale(0.99);
+  background: var(--accent-pressed);
+  box-shadow: 0 10px 22px var(--shadow);
+}
+
+.quiz-head,
+.dictionary-header,
+.dictionary-results {
+  width: min(100%, 520px);
+  margin: 0 auto;
+}
+
+.quiz-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quiz-card {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  align-self: center;
+  padding-bottom: 42px;
+}
+
+.answer-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.answer-button {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 0 16px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.answer-button:active {
+  transform: scale(0.99);
+}
+
+.answer-button.correct {
+  border-color: transparent;
+  background: var(--green);
+  color: #13351f;
+}
+
+.answer-button.wrong {
+  border-color: transparent;
+  background: var(--red);
+  color: #401515;
+}
+
+.search-field {
+  display: block;
+}
+
+.search-field span {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.search-field input {
+  width: 100%;
+  height: 58px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 0 18px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.search-field input::placeholder {
+  color: rgba(247, 247, 242, 0.48);
+}
+
+.search-field input:focus {
+  border-color: rgba(255, 211, 77, 0.72);
+  box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.14);
+}
+
+.dictionary-results {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding-bottom: 10px;
+}
+
+.word-row,
+.empty-state {
+  min-height: 48px;
+  border-radius: 16px;
+  padding: 13px 16px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.empty-state {
+  color: var(--muted);
+}
+
+.tab-bar {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  height: 74px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: var(--tab-bg);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+}
+
+.tab-item {
+  min-width: 0;
+  border: 0;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.tab-item.active {
+  background: var(--tab-active);
+  color: var(--text);
+}
+
+.tab-icon {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.tab-item span:last-child {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    padding-top: max(34px, env(safe-area-inset-top));
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  }
+
+  .screen-home.active {
+    min-height: calc(100dvh - 138px);
+    grid-template-rows: 158px 1fr;
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 22px;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+  }
+
+  .hero p {
+    margin-top: 8px;
+    font-size: 17px;
+  }
+
+  .center-stage {
+    align-items: start;
+    padding-top: min(14vh, 94px);
+  }
+
+  .start-button {
+    width: min(100%, 280px);
+    min-height: 66px;
+    border-radius: 14px;
+    font-size: 20px;
+  }
+
+  .quiz-card {
+    padding-bottom: 34px;
+  }
+
+  .search-field input {
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .tab-bar {
+    left: 18px;
+    right: 18px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    height: 68px;
+    border-radius: 18px;
+  }
+
+  .tab-item {
+    border-radius: 12px;
+  }
+
+  .tab-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .tab-item span:last-child {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-shell {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .tab-bar {
+    left: 10px;
+    right: 10px;
+  }
+}
