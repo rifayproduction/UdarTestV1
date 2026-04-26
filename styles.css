@@ -5,8 +5,8 @@
   --accent: #ffd34d;
   --accent-pressed: #f1c13f;
   --accent-text: #343434;
-  --tab-bg: rgba(0, 0, 0, 0.88);
-  --tab-active: rgba(255, 255, 255, 0.16);
+  --tab-bg: #050505;
+  --tab-active: #2d2d2d;
   --shadow: rgba(0, 0, 0, 0.28);
 }
 
@@ -180,8 +180,8 @@ input {
   padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  background: var(--tab-bg);
-  backdrop-filter: blur(18px);
+  background: #050505;
+  background-color: var(--tab-bg);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
 }
 
@@ -200,7 +200,8 @@ input {
 }
 
 .tab-item.active {
-  background: var(--tab-active);
+  background: #2d2d2d;
+  background-color: var(--tab-active);
   color: var(--text);
 }
 
