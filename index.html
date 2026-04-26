@@ -12,27 +12,39 @@
 </head>
 <body>
   <main class="app-shell">
-    <section class="hero" aria-label="Главный экран">
-      <div class="brand-mark">У</div>
-      <h1>Ударения</h1>
-      <p>Русского языка</p>
+    <section class="screen screen-home active" data-screen="test">
+      <div class="hero" aria-label="Главный экран">
+        <div class="brand-mark">У</div>
+        <h1>Ударения</h1>
+        <p>Русского языка</p>
+      </div>
+
+      <div class="center-stage">
+        <button class="start-button" type="button">Начать тест</button>
+      </div>
     </section>
 
-    <section class="center-stage">
-      <button class="start-button" type="button">Начать тест</button>
+    <section class="screen screen-dictionary" data-screen="dictionary">
+      <div class="dictionary-header">
+        <h1>Словарь</h1>
+        <label class="search-field">
+          <span>Поиск</span>
+          <input type="search" placeholder="Введите слово" autocomplete="off">
+        </label>
+      </div>
     </section>
   </main>
 
   <nav class="tab-bar" aria-label="Навигация">
-    <button class="tab-item active" type="button">
+    <button class="tab-item active" type="button" data-tab="test">
       <span class="tab-icon" aria-hidden="true">Т</span>
       <span>Тест</span>
     </button>
-    <button class="tab-item" type="button">
+    <button class="tab-item" type="button" data-tab="favorites">
       <span class="tab-icon" aria-hidden="true">★</span>
       <span>Избранное</span>
     </button>
-    <button class="tab-item" type="button">
+    <button class="tab-item" type="button" data-tab="dictionary">
       <span class="tab-icon" aria-hidden="true">А</span>
       <span>Словарь</span>
     </button>
