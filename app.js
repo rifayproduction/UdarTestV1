@@ -107,7 +107,6 @@ const startTestButton = document.getElementById("startTestButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
 const quizCounter = document.getElementById("quizCounter");
-const quizWord = document.getElementById("quizWord");
 const answerGrid = document.getElementById("answerGrid");
 
 let quizQuestions = [];
@@ -147,6 +146,36 @@ function formatStress(value) {
       }
 
       return lower;
+    })
+    .join("");
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatStressHtml(value) {
+  const vowels = "аеёиоуыэюя";
+
+  return [...value]
+    .map((letter) => {
+      const lower = letter.toLocaleLowerCase("ru-RU");
+      const isStressedVowel = letter !== lower && vowels.includes(lower);
+
+      if (isStressedVowel && lower === "ё") {
+        return "ё";
+      }
+
+      if (isStressedVowel) {
+        return `<span class="stress-letter">${escapeHtml(lower)}</span>`;
+      }
+
+      return escapeHtml(lower);
     })
     .join("");
 }
@@ -197,7 +226,7 @@ function renderDictionary() {
   words.forEach((word) => {
     const row = document.createElement("div");
     row.className = "word-row";
-    row.textContent = formatStress(word.correct);
+    row.innerHTML = formatStressHtml(word.correct);
     dictionaryResults.append(row);
   });
 }
@@ -225,14 +254,13 @@ function renderQuizQuestion() {
   answerLocked = false;
 
   quizCounter.textContent = `${quizIndex + 1} из ${quizQuestions.length}`;
-  quizWord.textContent = plainWord(question.correct);
   answerGrid.innerHTML = "";
 
   question.answers.forEach((answer) => {
     const button = document.createElement("button");
     button.className = "answer-button";
     button.type = "button";
-    button.textContent = formatStress(answer.text);
+    button.innerHTML = formatStressHtml(answer.text);
     button.addEventListener("click", () => handleAnswer(button, answer.isCorrect));
     answerGrid.append(button);
   });
