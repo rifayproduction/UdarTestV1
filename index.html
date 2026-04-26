@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -39,14 +39,13 @@
 
     <section class="screen screen-dictionary" data-screen="dictionary" hidden>
       <div class="dictionary-header">
-        <h1>Словарь</h1>
         <label class="search-field">
           <span>Поиск</span>
           <input id="dictionarySearch" type="search" placeholder="Введите слово" autocomplete="off">
         </label>
       </div>
 
-      <div class="dictionary-results" id="dictionaryResults"></div>
+      <div class="dictionary-results" id="dictionaryResults" hidden></div>
     </section>
   </main>
 
@@ -65,6 +64,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
