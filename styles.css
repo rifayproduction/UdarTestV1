@@ -1,0 +1,106 @@
+:root {
+  --bg: #b3b3b3;
+  --text: #f2f2f2;
+  --muted: #ececec;
+  --accent: #f2c94c;
+  --accent-text: #b3b3b3;
+  --tab-bg: rgba(255, 255, 255, 0.1);
+  --tab-active: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 48px 24px 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(38px, 8vw, 56px);
+  font-weight: 700;
+}
+
+.hero p {
+  margin: 10px 0 0;
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--muted);
+}
+
+.center-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.start-button {
+  border: 0;
+  border-radius: 14px;
+  padding: 18px 34px;
+  min-width: 220px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.tab-bar {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border-radius: 18px;
+  background: var(--tab-bg);
+  backdrop-filter: blur(10px);
+}
+
+.tab-item {
+  border: 0;
+  border-radius: 12px;
+  min-height: 48px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.tab-item.active {
+  background: var(--tab-active);
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    padding: 40px 18px 110px;
+  }
+
+  .start-button {
+    width: 100%;
+    max-width: 280px;
+  }
+}
