@@ -8,10 +8,16 @@ if (tg) {
 }
 
 function showScreen(screenName) {
+  if (screenName === "favorites") {
+    return;
+  }
+
   const nextScreen = screenName === "dictionary" ? "dictionary" : "test";
 
   screens.forEach((screen) => {
-    screen.classList.toggle("active", screen.dataset.screen === nextScreen);
+    const isActive = screen.dataset.screen === nextScreen;
+    screen.hidden = !isActive;
+    screen.classList.toggle("active", isActive);
   });
 
   tabs.forEach((tab) => {
@@ -24,3 +30,5 @@ tabs.forEach((tab) => {
     showScreen(tab.dataset.tab);
   });
 });
+
+showScreen("test");
