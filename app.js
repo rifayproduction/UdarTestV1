@@ -1,6 +1,8 @@
 const tg = window.Telegram?.WebApp;
 
-const accentWords = [
+const QUIZ_LENGTH = 10;
+
+const baseAccentWords = [
   { correct: "аэропОрты", wrong: "аэропортЫ" },
   { correct: "аэропОрт", wrong: "аэрОпорт" },
   { correct: "бАнты", wrong: "бантЫ" },
@@ -101,6 +103,154 @@ const accentWords = [
   { correct: "дозИровать", wrong: "дозировАть" },
 ];
 
+const additionalWordForms = [
+  "ждалА",
+  "жилОсь",
+  "закУпорить",
+  "занЯть",
+  "зАнял",
+  "занялА",
+  "зАняли",
+  "заперлА",
+  "запломбировАть",
+  "защемИт",
+  "звалА",
+  "звонИт",
+  "клАла",
+  "клЕить",
+  "крАлась",
+  "кровоточИть",
+  "лгалА",
+  "лилА",
+  "лилАсь",
+  "навралА",
+  "наделИт",
+  "надорвалАсь",
+  "назвалАсь",
+  "назвАлся",
+  "накренИтся",
+  "налилА",
+  "нарвалА",
+  "начАть",
+  "нАчал",
+  "началА",
+  "нАчали",
+  "обзвонИт",
+  "облегчИть",
+  "облегчИт",
+  "облилАсь",
+  "обнЯлась",
+  "обогналА",
+  "ободралА",
+  "ободрИть",
+  "ободрИт",
+  "ободрИться",
+  "ободрИтся",
+  "обострИть",
+  "одолжИть",
+  "одолжИт",
+  "озлОбить",
+  "оклЕить",
+  "окружИт",
+  "опОшлить",
+  "освЕдомиться",
+  "освЕдомится",
+  "отбылА",
+  "отдалА",
+  "откУпорить",
+  "отозвалА",
+  "отозвалАсь",
+  "перезвонИт",
+  "перелилА",
+  "перелИть",
+  "плодоносИть",
+  "пломбировАть",
+  "повторИт",
+  "позвалА",
+  "позвонИт",
+  "полилА",
+  "положИть",
+  "положИл",
+  "понЯть",
+  "понялА",
+  "послАла",
+  "прибЫть",
+  "прИбыл",
+  "прибылА",
+  "прИбыли",
+  "принЯть",
+  "прИнял",
+  "принялА",
+  "прИняли",
+  "рвалА",
+  "сверлИт",
+  "снялА",
+  "сорвалА",
+  "создалА",
+  "собралА",
+  "сорИт",
+  "убралА",
+  "углубИть",
+  "укрепИт",
+  "чЕрпать",
+  "щемИт",
+  "щЁлкать",
+  "закУпорив",
+  "начАв",
+  "начАвшись",
+  "отдАв",
+  "поднЯв",
+  "понЯв",
+  "прибЫв",
+  "создАв",
+  "довезЁнный",
+  "зАгнутый",
+  "зАнятый",
+  "занятА",
+  "зАпертый",
+  "заселЁнный",
+  "заселенА",
+  "кормЯщий",
+  "кровоточАщий",
+  "нажИвший",
+  "налИвший",
+  "нанЯвшийся",
+  "начАвший",
+  "нАчатый",
+  "низведЁнный",
+  "облегчЁнный",
+  "ободрЁнный",
+  "обострЁнный",
+  "отключЁнный",
+  "повторЁнный",
+  "поделЁнный",
+  "понЯвший",
+  "прИнятый",
+  "принятА",
+  "приручЁнный",
+  "прожИвший",
+  "снятА",
+  "сОгнутый",
+  "углублЁнный",
+  "вОвремя",
+  "дОверху",
+  "донЕльзя",
+  "дОнизу",
+  "дОсуха",
+  "зАсветло",
+  "зАтемно",
+  "красИвее",
+  "надОлго",
+  "ненадОлго",
+];
+
+const additionalAccentWords = additionalWordForms.map((correct) => ({
+  correct,
+  wrong: makeWrongAccent(correct),
+}));
+
+const accentWords = dedupeWords([...baseAccentWords, ...additionalAccentWords]);
+
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
 const startTestButton = document.getElementById("startTestButton");
@@ -127,6 +277,45 @@ function plainWord(value) {
 
 function normalizeText(value) {
   return plainWord(value);
+}
+
+function dedupeWords(words) {
+  const seen = new Set();
+
+  return words.filter((word) => {
+    const key = normalizeText(word.correct);
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+function makeWrongAccent(correct) {
+  const vowels = "аеёиоуыэюя";
+  const letters = [...correct];
+  const lowerLetters = letters.map((letter) =>
+    letter.toLocaleLowerCase("ru-RU").replace(/ё/g, "е")
+  );
+  const stressedIndex = letters.findIndex((letter) => {
+    const lower = letter.toLocaleLowerCase("ru-RU");
+    return letter !== lower && vowels.includes(lower);
+  });
+  const vowelIndexes = lowerLetters
+    .map((letter, index) => (vowels.includes(letter) ? index : -1))
+    .filter((index) => index !== -1);
+  const wrongIndex = vowelIndexes.find((index) => index !== stressedIndex);
+
+  if (wrongIndex === undefined) {
+    return correct;
+  }
+
+  return lowerLetters
+    .map((letter, index) => (index === wrongIndex ? letter.toLocaleUpperCase("ru-RU") : letter))
+    .join("");
 }
 
 function formatStress(value) {
@@ -202,7 +391,7 @@ function renderDictionary() {
 }
 
 function startQuiz() {
-  quizQuestions = shuffle(accentWords).slice(0, 3).map((word) => ({
+  quizQuestions = shuffle(accentWords).slice(0, QUIZ_LENGTH).map((word) => ({
     ...word,
     answers: shuffle([
       { text: word.correct, isCorrect: true },
