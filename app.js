@@ -150,36 +150,6 @@ function formatStress(value) {
     .join("");
 }
 
-function escapeHtml(value) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function formatStressHtml(value) {
-  const vowels = "аеёиоуыэюя";
-
-  return [...value]
-    .map((letter) => {
-      const lower = letter.toLocaleLowerCase("ru-RU");
-      const isStressedVowel = letter !== lower && vowels.includes(lower);
-
-      if (isStressedVowel && lower === "ё") {
-        return "ё";
-      }
-
-      if (isStressedVowel) {
-        return `<span class="stress-letter">${escapeHtml(lower)}</span>`;
-      }
-
-      return escapeHtml(lower);
-    })
-    .join("");
-}
-
 function shuffle(items) {
   return [...items].sort(() => Math.random() - 0.5);
 }
@@ -226,7 +196,7 @@ function renderDictionary() {
   words.forEach((word) => {
     const row = document.createElement("div");
     row.className = "word-row";
-    row.innerHTML = formatStressHtml(word.correct);
+    row.textContent = formatStress(word.correct);
     dictionaryResults.append(row);
   });
 }
@@ -260,7 +230,7 @@ function renderQuizQuestion() {
     const button = document.createElement("button");
     button.className = "answer-button";
     button.type = "button";
-    button.innerHTML = formatStressHtml(answer.text);
+    button.textContent = formatStress(answer.text);
     button.addEventListener("click", () => handleAnswer(button, answer.isCorrect));
     answerGrid.append(button);
   });
