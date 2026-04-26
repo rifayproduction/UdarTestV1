@@ -55,6 +55,11 @@ input {
   min-height: calc(100dvh - 156px);
 }
 
+.screen-quiz.active {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
 .screen-home.active {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -144,25 +149,9 @@ input {
 
 .quiz-card {
   width: min(100%, 520px);
-  margin: 28px auto 0;
-  padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  background: var(--surface);
-}
-
-.quiz-label {
-  margin: 0 0 8px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.quiz-card h2 {
-  margin: 0 0 22px;
-  font-size: 34px;
-  line-height: 1.1;
-  letter-spacing: 0;
+  margin: 0 auto;
+  align-self: center;
+  padding-bottom: 42px;
 }
 
 .answer-grid {
@@ -186,6 +175,24 @@ input {
 
 .answer-button:active {
   transform: scale(0.99);
+}
+
+.stress-letter {
+  position: relative;
+  display: inline-block;
+}
+
+.stress-letter::after {
+  content: "";
+  position: absolute;
+  top: -0.36em;
+  left: 50%;
+  width: 0.44em;
+  height: 0.12em;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translateX(-40%) rotate(-18deg);
+  transform-origin: center;
 }
 
 .answer-button.correct {
@@ -354,13 +361,7 @@ input {
   }
 
   .quiz-card {
-    margin-top: 24px;
-    padding: 18px;
-    border-radius: 18px;
-  }
-
-  .quiz-card h2 {
-    font-size: 30px;
+    padding-bottom: 34px;
   }
 
   .search-field input {
