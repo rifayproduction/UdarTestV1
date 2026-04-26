@@ -7,6 +7,10 @@
   --accent-text: #343434;
   --tab-bg: #050505;
   --tab-active: #2d2d2d;
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-strong: rgba(255, 255, 255, 0.16);
+  --green: #3fd47c;
+  --red: #ff5c5c;
   --shadow: rgba(0, 0, 0, 0.28);
 }
 
@@ -121,9 +125,79 @@ input {
   box-shadow: 0 10px 22px var(--shadow);
 }
 
-.dictionary-header {
+.quiz-head,
+.dictionary-header,
+.dictionary-results {
   width: min(100%, 520px);
   margin: 0 auto;
+}
+
+.quiz-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quiz-card {
+  width: min(100%, 520px);
+  margin: 28px auto 0;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: var(--surface);
+}
+
+.quiz-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quiz-card h2 {
+  margin: 0 0 22px;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.answer-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.answer-button {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 0 16px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.answer-button:active {
+  transform: scale(0.99);
+}
+
+.answer-button.correct {
+  border-color: transparent;
+  background: var(--green);
+  color: #13351f;
+}
+
+.answer-button.wrong {
+  border-color: transparent;
+  background: var(--red);
+  color: #401515;
 }
 
 .dictionary-header h1 {
@@ -153,7 +227,7 @@ input {
   border-radius: 18px;
   padding: 0 18px;
   outline: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface);
   color: var(--text);
   font-size: 17px;
   font-weight: 700;
@@ -168,6 +242,28 @@ input {
   box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.14);
 }
 
+.dictionary-results {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding-bottom: 10px;
+}
+
+.word-row,
+.empty-state {
+  min-height: 48px;
+  border-radius: 16px;
+  padding: 13px 16px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.empty-state {
+  color: var(--muted);
+}
+
 .tab-bar {
   position: fixed;
   left: 14px;
@@ -180,8 +276,7 @@ input {
   padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  background: #050505;
-  background-color: var(--tab-bg);
+  background: var(--tab-bg);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
 }
 
@@ -200,8 +295,7 @@ input {
 }
 
 .tab-item.active {
-  background: #2d2d2d;
-  background-color: var(--tab-active);
+  background: var(--tab-active);
   color: var(--text);
 }
 
@@ -265,6 +359,16 @@ input {
     min-height: 66px;
     border-radius: 14px;
     font-size: 20px;
+  }
+
+  .quiz-card {
+    margin-top: 24px;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .quiz-card h2 {
+    font-size: 30px;
   }
 
   .dictionary-header h1 {
