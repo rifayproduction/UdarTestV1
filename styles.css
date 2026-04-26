@@ -16,11 +16,13 @@
 
 html {
   min-height: 100%;
+  background: var(--bg);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: "Manrope", "Segoe UI", sans-serif;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.14), transparent 36%),
@@ -35,6 +37,7 @@ button {
 
 .app-shell {
   min-height: 100vh;
+  min-height: 100dvh;
   padding: max(44px, env(safe-area-inset-top)) 22px calc(112px + env(safe-area-inset-bottom));
   display: grid;
   grid-template-rows: auto 1fr;
@@ -126,8 +129,10 @@ button {
   min-width: 0;
   border: 0;
   border-radius: 18px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 3px;
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
@@ -160,6 +165,67 @@ button {
   white-space: nowrap;
 }
 
+@media (max-width: 520px) {
+  .app-shell {
+    padding-top: max(34px, env(safe-area-inset-top));
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+    grid-template-rows: 158px 1fr;
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 22px;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+  }
+
+  .hero p {
+    margin-top: 8px;
+    font-size: 17px;
+  }
+
+  .center-stage {
+    align-items: start;
+    padding-top: min(14vh, 94px);
+  }
+
+  .start-button {
+    width: min(100%, 280px);
+    min-height: 66px;
+    border-radius: 14px;
+    font-size: 20px;
+  }
+
+  .tab-bar {
+    left: 18px;
+    right: 18px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    height: 68px;
+    border-radius: 18px;
+  }
+
+  .tab-item {
+    border-radius: 12px;
+  }
+
+  .tab-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .tab-item span:last-child {
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 360px) {
   .app-shell {
     padding-left: 16px;
@@ -167,11 +233,11 @@ button {
   }
 
   .hero h1 {
-    font-size: 40px;
+    font-size: 36px;
   }
 
   .hero p {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .tab-bar {
