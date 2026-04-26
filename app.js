@@ -23,13 +23,14 @@ const accentWords = [
   { correct: "знАчимость", wrong: "значИмость" },
   { correct: "Иксы", wrong: "иксЫ" },
   { correct: "каталОг", wrong: "катАлог" },
-  { correct: "квартАл (во всех значениях)", wrong: "квАртал (во всех значениях)" },
+  { correct: "квартАл", wrong: "квАртал" },
   { correct: "киломЕтр", wrong: "килОметр" },
   { correct: "кОнусов", wrong: "конусОв" },
   { correct: "кОнус", wrong: "конУс" },
   { correct: "корЫсть", wrong: "кОрысть" },
   { correct: "крАны", wrong: "кранЫ" },
-  { correct: "кремЕнь; кремнЯ", wrong: "крЕмень; крЕмня" },
+  { correct: "кремЕнь", wrong: "крЕмень" },
+  { correct: "кремнЯ", wrong: "крЕмня" },
   { correct: "лЕкторов", wrong: "лекторОв" },
   { correct: "лОктя", wrong: "локтЯ" },
   { correct: "локтЕй", wrong: "лОктей" },
@@ -46,8 +47,8 @@ const accentWords = [
   { correct: "новостЕй", wrong: "нОвостей" },
   { correct: "нОгтя", wrong: "ногтЯ" },
   { correct: "ногтЕй", wrong: "нОгтей" },
-  { correct: "Отзыв (о книге)", wrong: "отзЫв (о книге)" },
-  { correct: "отзЫв (посла из страны)", wrong: "Отзыв (посла из страны)" },
+  { correct: "Отзыв", wrong: "отзЫв" },
+  { correct: "отзЫв", wrong: "Отзыв" },
   { correct: "Отрочество", wrong: "отрОчество" },
   { correct: "партЕр", wrong: "пАртер" },
   { correct: "портфЕль", wrong: "пОртфель" },
@@ -78,7 +79,8 @@ const accentWords = [
   { correct: "ловкА", wrong: "лОвка" },
   { correct: "мозаИчный", wrong: "мозАичный" },
   { correct: "оптОвый", wrong: "Оптовый" },
-  { correct: "прозорлИвый; прозорлИва", wrong: "прозОрливый; прозОрлива" },
+  { correct: "прозорлИвый", wrong: "прозОрливый" },
+  { correct: "прозорлИва", wrong: "прозОрлива" },
   { correct: "слИвовый", wrong: "сливОвый" },
   { correct: "бралА", wrong: "брАла" },
   { correct: "бралАсь", wrong: "брАлась" },
@@ -86,7 +88,8 @@ const accentWords = [
   { correct: "взялАсь", wrong: "взЯлась" },
   { correct: "влилАсь", wrong: "влИлась" },
   { correct: "ворвалАсь", wrong: "ворвАлась" },
-  { correct: "воспринЯть; воспринялА", wrong: "воспрИнять; воспрИняла" },
+  { correct: "воспринЯть", wrong: "воспрИнять" },
+  { correct: "воспринялА", wrong: "воспрИняла" },
   { correct: "воссоздалА", wrong: "воссоздАла" },
   { correct: "вручИт", wrong: "врУчит" },
   { correct: "гналА", wrong: "гнАла" },
@@ -116,8 +119,36 @@ if (tg) {
   tg.expand();
 }
 
+function plainWord(value) {
+  return value
+    .toLocaleLowerCase("ru-RU")
+    .replace(/ё/g, "е")
+    .trim();
+}
+
 function normalizeText(value) {
-  return value.toLocaleLowerCase("ru-RU").replace(/ё/g, "е");
+  return plainWord(value);
+}
+
+function formatStress(value) {
+  const vowels = "аеёиоуыэюя";
+
+  return [...value]
+    .map((letter) => {
+      const lower = letter.toLocaleLowerCase("ru-RU");
+      const isStressedVowel = letter !== lower && vowels.includes(lower);
+
+      if (isStressedVowel && lower === "ё") {
+        return "ё";
+      }
+
+      if (isStressedVowel) {
+        return `${lower}\u0301`;
+      }
+
+      return lower;
+    })
+    .join("");
 }
 
 function shuffle(items) {
@@ -149,11 +180,14 @@ function showScreen(screenName) {
 
 function renderDictionary() {
   const query = normalizeText(dictionarySearch.value.trim());
-  const words = query
-    ? accentWords.filter((word) => normalizeText(word.correct).includes(query))
-    : accentWords;
-
   dictionaryResults.innerHTML = "";
+  dictionaryResults.hidden = !query;
+
+  if (!query) {
+    return;
+  }
+
+  const words = accentWords.filter((word) => normalizeText(word.correct).includes(query));
 
   if (!words.length) {
     dictionaryResults.innerHTML = '<div class="empty-state">Ничего не найдено</div>';
@@ -163,7 +197,7 @@ function renderDictionary() {
   words.forEach((word) => {
     const row = document.createElement("div");
     row.className = "word-row";
-    row.textContent = word.correct;
+    row.textContent = formatStress(word.correct);
     dictionaryResults.append(row);
   });
 }
@@ -191,14 +225,14 @@ function renderQuizQuestion() {
   answerLocked = false;
 
   quizCounter.textContent = `${quizIndex + 1} из ${quizQuestions.length}`;
-  quizWord.textContent = question.correct.toLocaleLowerCase("ru-RU");
+  quizWord.textContent = plainWord(question.correct);
   answerGrid.innerHTML = "";
 
   question.answers.forEach((answer) => {
     const button = document.createElement("button");
     button.className = "answer-button";
     button.type = "button";
-    button.textContent = answer.text;
+    button.textContent = formatStress(answer.text);
     button.addEventListener("click", () => handleAnswer(button, answer.isCorrect));
     answerGrid.append(button);
   });
