@@ -387,6 +387,19 @@ input {
   color: rgba(247, 247, 242, 0.48);
 }
 
+.search-field input::-webkit-search-cancel-button {
+  width: 18px;
+  height: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 43%, var(--muted) 43%, var(--muted) 57%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, var(--muted) 43%, var(--muted) 57%, transparent 57%);
+  cursor: pointer;
+  opacity: 0.85;
+}
+
 .search-field input:focus {
   border-color: rgba(255, 211, 77, 0.72);
   box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.14);
