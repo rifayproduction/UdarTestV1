@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="styles.css?v=20">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -22,18 +22,42 @@
       <div class="center-stage">
         <div class="mode-select" id="modeSelect">
           <button class="mode-trigger" id="modeTrigger" type="button" aria-expanded="false">
-            <span id="modeLabel">ЕГЭ слова</span>
+            <span class="mode-trigger-copy">
+              <span class="mode-caption">Режим тренировки</span>
+              <span class="mode-current">
+                <span class="mode-current-icon" id="modeIcon" aria-hidden="true">А</span>
+                <span class="mode-current-text">
+                  <span id="modeLabel">ЕГЭ слова</span>
+                  <small id="modeMeta">Вся база слов</small>
+                </span>
+              </span>
+            </span>
             <span class="mode-arrow" aria-hidden="true">⌄</span>
           </button>
-          <div class="mode-menu" id="modeMenu" hidden>
-            <button class="mode-option active" type="button" data-mode="all">ЕГЭ слова</button>
+          <div class="mode-menu" id="modeMenu" aria-hidden="true">
+            <button class="mode-option active" type="button" data-mode="all">
+              <span class="mode-option-icon" aria-hidden="true">А</span>
+              <span class="mode-option-text">
+                <strong>ЕГЭ слова</strong>
+                <small>Вся база для тренировки</small>
+              </span>
+              <span class="mode-badge" id="allWordsCount">0</span>
+            </button>
             <button class="mode-option" type="button" data-mode="mistakes">
-              Мои ошибки
-              <span id="mistakesCount">0</span>
+              <span class="mode-option-icon" aria-hidden="true">!</span>
+              <span class="mode-option-text">
+                <strong>Мои ошибки</strong>
+                <small>Слова, где ты ошибался</small>
+              </span>
+              <span class="mode-badge" id="mistakesCount">0</span>
             </button>
             <button class="mode-option" type="button" data-mode="favorites">
-              Избранное
-              <span id="favoritesCount">0</span>
+              <span class="mode-option-icon" aria-hidden="true">★</span>
+              <span class="mode-option-text">
+                <strong>Избранное</strong>
+                <small>Только сохраненные слова</small>
+              </span>
+              <span class="mode-badge" id="favoritesCount">0</span>
             </button>
           </div>
         </div>
@@ -101,6 +125,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=19"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>
