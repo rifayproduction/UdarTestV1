@@ -2,6 +2,7 @@ const tg = window.Telegram?.WebApp;
 
 const QUIZ_LENGTH = 10;
 const MISTAKES_STORAGE_KEY = "egeAccentMistakes";
+const FAVORITES_STORAGE_KEY = "egeAccentFavorites";
 
 const baseAccentWords = [
   { correct: "аэропОрты", wrong: "аэропортЫ" },
@@ -259,10 +260,15 @@ const modeTrigger = document.getElementById("modeTrigger");
 const modeLabel = document.getElementById("modeLabel");
 const modeMenu = document.getElementById("modeMenu");
 const startTestButton = document.getElementById("startTestButton");
+const restartTestButton = document.getElementById("restartTestButton");
+const repeatMistakesButton = document.getElementById("repeatMistakesButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
+const favoritesResults = document.getElementById("favoritesResults");
 const quizCounter = document.getElementById("quizCounter");
 const answerGrid = document.getElementById("answerGrid");
+const resultScore = document.getElementById("resultScore");
+const resultDetails = document.getElementById("resultDetails");
 const mistakesCount = document.getElementById("mistakesCount");
 const modeHint = document.getElementById("modeHint");
 
@@ -271,6 +277,9 @@ let quizIndex = 0;
 let answerLocked = false;
 let selectedMode = "all";
 let mistakes = loadMistakes();
+let favorites = loadFavorites();
+let quizCorrectCount = 0;
+let quizMistakeCount = 0;
 
 if (tg) {
   tg.ready();
@@ -364,6 +373,56 @@ function saveMistakes() {
   localStorage.setItem(MISTAKES_STORAGE_KEY, JSON.stringify(mistakes));
 }
 
+function loadFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveFavorites() {
+  localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
+}
+
+function isFavorite(word) {
+  return Boolean(favorites[normalizeText(word.correct)]);
+}
+
+function toggleFavorite(word) {
+  const key = normalizeText(word.correct);
+
+  if (favorites[key]) {
+    delete favorites[key];
+  } else {
+    favorites[key] = {
+      correct: word.correct,
+      wrong: word.wrong,
+    };
+  }
+
+  saveFavorites();
+  renderDictionary();
+  renderFavorites();
+  renderQuizFavoriteButtons();
+}
+
+function createFavoriteButton(word) {
+  const button = document.createElement("button");
+  const active = isFavorite(word);
+  button.className = "favorite-button";
+  button.type = "button";
+  button.textContent = "★";
+  button.classList.toggle("active", active);
+  button.setAttribute("aria-label", active ? "Убрать из избранного" : "Добавить в избранное");
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleFavorite(word);
+  });
+
+  return button;
+}
+
 function updateMistakeStats(word, isCorrect) {
   const key = normalizeText(word.correct);
 
@@ -440,11 +499,9 @@ function setModeMenuOpen(isOpen) {
 }
 
 function showScreen(screenName) {
-  if (screenName === "favorites") {
-    return;
-  }
-
-  const nextScreen = screenName === "dictionary" || screenName === "quiz" ? screenName : "test";
+  const nextScreen = ["dictionary", "quiz", "result", "favorites"].includes(screenName)
+    ? screenName
+    : "test";
 
   screens.forEach((screen) => {
     const isActive = screen.dataset.screen === nextScreen;
@@ -453,12 +510,16 @@ function showScreen(screenName) {
   });
 
   tabs.forEach((tab) => {
-    const activeTab = nextScreen === "dictionary" ? "dictionary" : "test";
+    const activeTab = nextScreen === "dictionary" || nextScreen === "favorites" ? nextScreen : "test";
     tab.classList.toggle("active", tab.dataset.tab === activeTab);
   });
 
   if (nextScreen === "dictionary") {
     dictionarySearch.focus();
+  }
+
+  if (nextScreen === "favorites") {
+    renderFavorites();
   }
 }
 
@@ -481,8 +542,34 @@ function renderDictionary() {
   words.forEach((word) => {
     const row = document.createElement("div");
     row.className = "word-row";
-    row.textContent = formatStress(word.correct);
+    const text = document.createElement("span");
+    text.textContent = formatStress(word.correct);
+    row.append(text, createFavoriteButton(word));
     dictionaryResults.append(row);
+  });
+}
+
+function renderFavorites() {
+  if (!favoritesResults) {
+    return;
+  }
+
+  const favoriteKeys = new Set(Object.keys(favorites));
+  const words = accentWords.filter((word) => favoriteKeys.has(normalizeText(word.correct)));
+  favoritesResults.innerHTML = "";
+
+  if (!words.length) {
+    favoritesResults.innerHTML = '<div class="empty-state">Пока нет избранных слов</div>';
+    return;
+  }
+
+  words.forEach((word) => {
+    const row = document.createElement("div");
+    row.className = "word-row";
+    const text = document.createElement("span");
+    text.textContent = formatStress(word.correct);
+    row.append(text, createFavoriteButton(word));
+    favoritesResults.append(row);
   });
 }
 
@@ -503,12 +590,22 @@ function startQuiz() {
   }));
   quizIndex = 0;
   answerLocked = false;
+  quizCorrectCount = 0;
+  quizMistakeCount = 0;
   showScreen("quiz");
   renderQuizQuestion();
 }
 
 function finishQuiz() {
-  showScreen("test");
+  if (!resultScore || !resultDetails || !repeatMistakesButton) {
+    showScreen("test");
+    return;
+  }
+
+  resultScore.textContent = `${quizCorrectCount} из ${quizQuestions.length}`;
+  resultDetails.textContent = `Ошибок: ${quizMistakeCount}`;
+  repeatMistakesButton.disabled = !Object.keys(mistakes).length;
+  showScreen("result");
 }
 
 function renderQuizQuestion() {
@@ -519,12 +616,27 @@ function renderQuizQuestion() {
   answerGrid.innerHTML = "";
 
   question.answers.forEach((answer) => {
+    const wrap = document.createElement("div");
+    wrap.className = "answer-wrap";
     const button = document.createElement("button");
     button.className = "answer-button";
     button.type = "button";
     button.textContent = formatStress(answer.text);
     button.addEventListener("click", () => handleAnswer(button, answer.isCorrect));
-    answerGrid.append(button);
+    wrap.append(button, createFavoriteButton(question));
+    answerGrid.append(wrap);
+  });
+}
+
+function renderQuizFavoriteButtons() {
+  if (!quizQuestions.length || !quizQuestions[quizIndex]) {
+    return;
+  }
+
+  answerGrid.querySelectorAll(".favorite-button").forEach((button) => {
+    const active = isFavorite(quizQuestions[quizIndex]);
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-label", active ? "Убрать из избранного" : "Добавить в избранное");
   });
 }
 
@@ -536,6 +648,8 @@ function handleAnswer(button, isCorrect) {
   const question = quizQuestions[quizIndex];
   answerLocked = true;
   button.classList.add(isCorrect ? "correct" : "wrong");
+  quizCorrectCount += isCorrect ? 1 : 0;
+  quizMistakeCount += isCorrect ? 0 : 1;
   updateMistakeStats(question, isCorrect);
   tg?.HapticFeedback?.notificationOccurred(isCorrect ? "success" : "error");
 
@@ -569,8 +683,14 @@ modeOptions.forEach((button) => {
 });
 
 startTestButton.addEventListener("click", startQuiz);
+restartTestButton?.addEventListener("click", startQuiz);
+repeatMistakesButton?.addEventListener("click", () => {
+  setMode("mistakes");
+  startQuiz();
+});
 dictionarySearch.addEventListener("input", renderDictionary);
 
 renderDictionary();
+renderFavorites();
 renderModeState();
 showScreen("test");
