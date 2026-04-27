@@ -105,8 +105,53 @@ input {
 
 .center-stage {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
+}
+
+.mode-picker {
+  width: min(100%, 360px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.mode-button {
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  border-radius: 15px;
+  padding: 0 10px;
+  background: transparent;
+  color: rgba(247, 247, 242, 0.78);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mode-button.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.mode-button span {
+  margin-left: 4px;
+  color: var(--accent);
+}
+
+.mode-hint {
+  min-height: 20px;
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .start-button {
@@ -333,6 +378,11 @@ input {
   .center-stage {
     align-items: start;
     padding-top: min(14vh, 94px);
+  }
+
+  .mode-picker,
+  .mode-hint {
+    align-self: center;
   }
 
   .start-button {
