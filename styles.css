@@ -55,6 +55,17 @@ input {
   min-height: calc(100dvh - 156px);
 }
 
+body[data-screen="quiz"] .app-shell,
+body[data-screen="result"] .app-shell {
+  padding-bottom: max(28px, env(safe-area-inset-bottom));
+}
+
+body[data-screen="quiz"] .screen,
+body[data-screen="result"] .screen {
+  min-height: calc(100vh - 76px);
+  min-height: calc(100dvh - 76px);
+}
+
 .screen-quiz.active {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -280,10 +291,12 @@ input {
 }
 
 .result-card {
+  --result-color: var(--accent);
+  --result-glow: rgba(255, 211, 77, 0.14);
   width: min(100%, 420px);
   margin: 0 auto;
-  min-height: 372px;
-  padding: 44px 24px 28px;
+  min-height: 454px;
+  padding: 42px 24px 28px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -295,13 +308,28 @@ input {
   overflow: hidden;
 }
 
+.result-card.result-good {
+  --result-color: var(--green);
+  --result-glow: rgba(63, 212, 124, 0.14);
+}
+
+.result-card.result-mid {
+  --result-color: var(--accent);
+  --result-glow: rgba(255, 211, 77, 0.14);
+}
+
+.result-card.result-low {
+  --result-color: var(--red);
+  --result-glow: rgba(255, 92, 92, 0.14);
+}
+
 .result-card::before {
   content: "";
   position: absolute;
   inset: -80px 36px auto;
   height: 150px;
   border-radius: 50%;
-  background: rgba(255, 211, 77, 0.14);
+  background: var(--result-glow);
   filter: blur(34px);
   pointer-events: none;
 }
@@ -336,24 +364,24 @@ input {
 
 .result-verdict {
   margin: 0;
-  color: var(--accent);
+  color: var(--result-color);
   font-size: 26px;
   line-height: 1.15;
   font-weight: 800;
 }
 
 .result-score {
-  width: 136px;
-  height: 136px;
+  width: 188px;
+  height: 188px;
   margin: 18px auto 0;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, #454545 0 56%, transparent 57%),
-    conic-gradient(var(--accent) var(--score-angle, 0deg), rgba(255, 255, 255, 0.16) 0);
+    radial-gradient(circle at center, #454545 0 67%, transparent 68%),
+    conic-gradient(var(--result-color) var(--score-angle, 0deg), rgba(255, 255, 255, 0.16) 0);
   color: var(--text);
-  font-size: 30px;
+  font-size: 31px;
   line-height: 1.1;
   font-weight: 800;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
