@@ -282,6 +282,8 @@ const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
 const favoritesResults = document.getElementById("favoritesResults");
 const quizCounter = document.getElementById("quizCounter");
+const quizProgress = document.getElementById("quizProgress");
+const quizProgressBar = document.getElementById("quizProgressBar");
 const quizFavoriteButton = document.getElementById("quizFavoriteButton");
 const answerGrid = document.getElementById("answerGrid");
 const resultCard = document.querySelector(".result-card");
@@ -804,6 +806,16 @@ function renderQuizQuestion() {
   answerLocked = false;
 
   quizCounter.textContent = `${quizIndex + 1} из ${quizQuestions.length}`;
+  const progressValue = Math.round(((quizIndex + 1) / quizQuestions.length) * 100);
+
+  if (quizProgress) {
+    quizProgress.setAttribute("aria-valuenow", String(progressValue));
+  }
+
+  if (quizProgressBar) {
+    quizProgressBar.style.width = `${progressValue}%`;
+  }
+
   answerGrid.innerHTML = "";
   renderQuizFavoriteButton();
 
