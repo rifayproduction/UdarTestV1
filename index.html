@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="styles.css?v=25">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -59,6 +59,17 @@
               <span class="mode-badge" id="favoritesCount">0</span>
             </button>
           </div>
+        </div>
+        <div class="quiz-length" aria-label="Количество слов в тесте">
+          <span class="quiz-length-copy">
+            <span>Слов в тесте</span>
+            <small>Выбери длину</small>
+          </span>
+          <span class="quiz-length-options">
+            <button class="quiz-length-option" type="button" data-quiz-length="5">5</button>
+            <button class="quiz-length-option active" type="button" data-quiz-length="10">10</button>
+            <button class="quiz-length-option" type="button" data-quiz-length="20">20</button>
+          </span>
         </div>
         <button class="start-button" id="startTestButton" type="button">Начать тест</button>
         <p class="mode-hint" id="modeHint"></p>
@@ -129,6 +140,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=24"></script>
+  <script src="app.js?v=25"></script>
 </body>
 </html>
