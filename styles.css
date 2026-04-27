@@ -104,27 +104,8 @@ body[data-screen="result"] .screen {
 .hero {
   width: min(100%, 420px);
   margin: 0 auto;
-  padding-top: 8px;
+  padding-top: 30px;
   text-align: center;
-}
-
-.brand-mark {
-  width: 62px;
-  height: 62px;
-  margin: 0 auto 18px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 211, 77, 0.26);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 32%, rgba(255, 211, 77, 0.28), transparent 52%),
-    rgba(255, 255, 255, 0.11);
-  color: var(--accent);
-  font-size: 30px;
-  font-weight: 800;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 14px 34px rgba(255, 211, 77, 0.1);
 }
 
 .hero h1 {
@@ -791,13 +772,6 @@ body[data-screen="result"] .screen {
   .screen-home.active {
     min-height: calc(100dvh - 138px);
     grid-template-rows: 158px 1fr;
-  }
-
-  .brand-mark {
-    width: 42px;
-    height: 42px;
-    margin-bottom: 14px;
-    font-size: 21px;
   }
 
   .hero h1 {
