@@ -512,14 +512,28 @@ function getResultVerdict(correctCount, totalCount) {
   }
 
   if (percent >= 0.6) {
-    return "Хороший результат";
+    return "Хорошо";
   }
 
-  if (percent >= 0.4) {
+  if (percent >= 0.5) {
     return "Нужно повторить";
   }
 
   return "Есть что добить";
+}
+
+function getResultTone(correctCount, totalCount) {
+  const percent = totalCount ? correctCount / totalCount : 0;
+
+  if (percent >= 0.8) {
+    return "good";
+  }
+
+  if (percent >= 0.5) {
+    return "mid";
+  }
+
+  return "low";
 }
 
 function renderModeState() {
@@ -594,6 +608,8 @@ function showScreen(screenName) {
   const nextScreen = ["dictionary", "quiz", "result", "favorites"].includes(screenName)
     ? screenName
     : "test";
+
+  document.body.dataset.screen = nextScreen;
 
   screens.forEach((screen) => {
     const isActive = screen.dataset.screen === nextScreen;
@@ -696,8 +712,7 @@ function startQuestions(sourceWords) {
   renderQuizQuestion();
 }
 
-function startAllWordsQuiz() {
-  setMode("all");
+function restartSelectedModeQuiz() {
   startQuiz();
 }
 
@@ -716,12 +731,15 @@ function finishQuiz() {
   }
 
   const scoreAngle = quizQuestions.length ? (quizCorrectCount / quizQuestions.length) * 360 : 0;
+  const tone = getResultTone(quizCorrectCount, quizQuestions.length);
 
   if (resultVerdict) {
     resultVerdict.textContent = getResultVerdict(quizCorrectCount, quizQuestions.length);
   }
 
   if (resultCard) {
+    resultCard.classList.remove("result-good", "result-mid", "result-low");
+    resultCard.classList.add(`result-${tone}`);
     resultCard.style.setProperty("--score-angle", `${scoreAngle}deg`);
   }
 
@@ -804,7 +822,7 @@ modeOptions.forEach((button) => {
 });
 
 startTestButton.addEventListener("click", startQuiz);
-restartTestButton?.addEventListener("click", startAllWordsQuiz);
+restartTestButton?.addEventListener("click", restartSelectedModeQuiz);
 repeatMistakesButton?.addEventListener("click", () => {
   repeatCurrentMistakes();
 });
