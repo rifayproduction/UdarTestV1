@@ -1,6 +1,7 @@
 const tg = window.Telegram?.WebApp;
 
-const QUIZ_LENGTH = 10;
+const DEFAULT_QUIZ_LENGTH = 10;
+const QUIZ_LENGTH_STORAGE_KEY = "egeAccentQuizLength";
 const MISTAKES_STORAGE_KEY = "egeAccentMistakes";
 const FAVORITES_STORAGE_KEY = "egeAccentFavorites";
 
@@ -269,6 +270,7 @@ const screens = document.querySelectorAll("[data-screen]");
 const tabBar = document.querySelector(".tab-bar");
 const modeSelect = document.getElementById("modeSelect");
 const modeOptions = document.querySelectorAll("[data-mode]");
+const quizLengthOptions = document.querySelectorAll("[data-quiz-length]");
 const modeTrigger = document.getElementById("modeTrigger");
 const modeIcon = document.getElementById("modeIcon");
 const modeLabel = document.getElementById("modeLabel");
@@ -299,6 +301,7 @@ let quizQuestions = [];
 let quizIndex = 0;
 let answerLocked = false;
 let selectedMode = "all";
+let selectedQuizLength = loadQuizLength();
 let mistakes = loadMistakes();
 let favorites = loadFavorites();
 let quizCorrectCount = 0;
@@ -407,6 +410,25 @@ function loadFavorites() {
 
 function saveFavorites() {
   localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
+}
+
+function loadQuizLength() {
+  const savedLength = Number(localStorage.getItem(QUIZ_LENGTH_STORAGE_KEY));
+
+  return [5, 10, 20].includes(savedLength) ? savedLength : DEFAULT_QUIZ_LENGTH;
+}
+
+function saveQuizLength() {
+  localStorage.setItem(QUIZ_LENGTH_STORAGE_KEY, String(selectedQuizLength));
+}
+
+function setQuizLength(length) {
+  selectedQuizLength = [5, 10, 20].includes(length) ? length : DEFAULT_QUIZ_LENGTH;
+  saveQuizLength();
+
+  quizLengthOptions.forEach((button) => {
+    button.classList.toggle("active", Number(button.dataset.quizLength) === selectedQuizLength);
+  });
 }
 
 function isFavorite(word) {
@@ -748,7 +770,7 @@ function startQuiz() {
 }
 
 function startQuestions(sourceWords) {
-  quizQuestions = shuffle(sourceWords).slice(0, QUIZ_LENGTH).map((word) => ({
+  quizQuestions = shuffle(sourceWords).slice(0, selectedQuizLength).map((word) => ({
     ...word,
     answers: shuffle([
       { text: word.correct, isCorrect: true },
@@ -883,6 +905,12 @@ modeOptions.forEach((button) => {
   });
 });
 
+quizLengthOptions.forEach((button) => {
+  button.addEventListener("click", () => {
+    setQuizLength(Number(button.dataset.quizLength));
+  });
+});
+
 document.addEventListener("click", (event) => {
   if (modeSelect && !modeSelect.contains(event.target)) {
     setModeMenuOpen(false);
@@ -906,5 +934,6 @@ dictionarySearch.addEventListener("input", renderDictionary);
 
 renderDictionary();
 renderFavorites();
+setQuizLength(selectedQuizLength);
 renderModeState();
 showScreen("test");
