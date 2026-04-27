@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=17">
+  <link rel="stylesheet" href="styles.css?v=18">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -31,6 +31,10 @@
               Мои ошибки
               <span id="mistakesCount">0</span>
             </button>
+            <button class="mode-option" type="button" data-mode="favorites">
+              Избранное
+              <span id="favoritesCount">0</span>
+            </button>
           </div>
         </div>
         <button class="start-button" id="startTestButton" type="button">Начать тест</button>
@@ -53,7 +57,8 @@
       <div class="result-card">
         <button class="back-button" id="resultBackButton" type="button" aria-label="Вернуться на главный экран">↩</button>
         <p class="result-label">Результат</p>
-        <h2 id="resultScore">0 из 10</h2>
+        <h2 class="result-verdict" id="resultVerdict">Хороший старт</h2>
+        <div class="result-score" id="resultScore">0 из 10</div>
         <p id="resultDetails">Ошибок: 0</p>
         <div class="result-actions">
           <button class="secondary-button" id="repeatMistakesButton" type="button">Повторить ошибки</button>
@@ -96,6 +101,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=17"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>
