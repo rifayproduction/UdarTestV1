@@ -251,10 +251,22 @@ const additionalAccentWords = additionalWordForms.map((correct) => ({
   wrong: makeWrongAccent(correct),
 }));
 
-const accentWords = dedupeWords([...baseAccentWords, ...additionalAccentWords]);
+const duplicateWordForms = new Set([
+  "аэропорты",
+  "бухгалтеров",
+  "конусов",
+  "местностей",
+]);
+
+const accentWords = dedupeWords(
+  [...baseAccentWords, ...additionalAccentWords].filter(
+    (word) => !duplicateWordForms.has(normalizeText(word.correct))
+  )
+);
 
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
+const tabBar = document.querySelector(".tab-bar");
 const modeOptions = document.querySelectorAll("[data-mode]");
 const modeTrigger = document.getElementById("modeTrigger");
 const modeLabel = document.getElementById("modeLabel");
@@ -526,6 +538,10 @@ function showScreen(screenName) {
     const activeTab = nextScreen === "dictionary" || nextScreen === "favorites" ? nextScreen : "test";
     tab.classList.toggle("active", tab.dataset.tab === activeTab);
   });
+
+  if (tabBar) {
+    tabBar.hidden = nextScreen === "quiz" || nextScreen === "result";
+  }
 
   if (nextScreen === "dictionary") {
     dictionarySearch.focus();
