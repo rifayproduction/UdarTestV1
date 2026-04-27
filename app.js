@@ -394,15 +394,22 @@ function getMistakeWords() {
 
 function renderModeState() {
   const count = Object.keys(mistakes).length;
-  mistakesCount.textContent = count;
+
+  if (mistakesCount) {
+    mistakesCount.textContent = count;
+  }
 
   if (selectedMode === "mistakes" && count === 0) {
-    modeHint.textContent = "Ошибок пока нет";
+    if (modeHint) {
+      modeHint.textContent = "Ошибок пока нет";
+    }
     startTestButton.disabled = true;
     return;
   }
 
-  modeHint.textContent = selectedMode === "mistakes" ? `Слов с ошибками: ${count}` : "";
+  if (modeHint) {
+    modeHint.textContent = selectedMode === "mistakes" ? `Слов с ошибками: ${count}` : "";
+  }
   startTestButton.disabled = false;
 }
 
