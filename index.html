@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -41,7 +41,7 @@
     <section class="screen screen-quiz" data-screen="quiz" hidden>
       <div class="quiz-head">
         <span id="quizCounter">1 из 10</span>
-        <span>Выберите правильное ударение</span>
+        <button class="favorite-button quiz-favorite" id="quizFavoriteButton" type="button" aria-label="Добавить в избранное">★</button>
       </div>
 
       <div class="quiz-card">
@@ -50,6 +50,7 @@
     </section>
 
     <section class="screen screen-result" data-screen="result" hidden>
+      <button class="back-button" id="resultBackButton" type="button" aria-label="Вернуться на главный экран">↩</button>
       <div class="result-card">
         <p class="result-label">Результат</p>
         <h2 id="resultScore">0 из 10</h2>
@@ -95,6 +96,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
