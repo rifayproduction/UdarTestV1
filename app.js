@@ -281,9 +281,12 @@ const favoritesResults = document.getElementById("favoritesResults");
 const quizCounter = document.getElementById("quizCounter");
 const quizFavoriteButton = document.getElementById("quizFavoriteButton");
 const answerGrid = document.getElementById("answerGrid");
+const resultCard = document.querySelector(".result-card");
+const resultVerdict = document.getElementById("resultVerdict");
 const resultScore = document.getElementById("resultScore");
 const resultDetails = document.getElementById("resultDetails");
 const mistakesCount = document.getElementById("mistakesCount");
+const favoritesCount = document.getElementById("favoritesCount");
 const modeHint = document.getElementById("modeHint");
 
 let quizQuestions = [];
@@ -417,6 +420,7 @@ function toggleFavorite(word) {
   }
 
   saveFavorites();
+  renderModeState();
   renderDictionary();
   renderFavorites();
   renderQuizFavoriteButton();
@@ -479,11 +483,55 @@ function getMistakeWords() {
   return accentWords.filter((word) => mistakeKeys.has(normalizeText(word.correct)));
 }
 
+function getFavoriteWords() {
+  const favoriteKeys = new Set(Object.keys(favorites));
+  return accentWords.filter((word) => favoriteKeys.has(normalizeText(word.correct)));
+}
+
+function getSelectedModeWords() {
+  if (selectedMode === "mistakes") {
+    return getMistakeWords();
+  }
+
+  if (selectedMode === "favorites") {
+    return getFavoriteWords();
+  }
+
+  return accentWords;
+}
+
+function getResultVerdict(correctCount, totalCount) {
+  const percent = totalCount ? correctCount / totalCount : 0;
+
+  if (percent === 1) {
+    return "Идеально";
+  }
+
+  if (percent >= 0.8) {
+    return "Отлично";
+  }
+
+  if (percent >= 0.6) {
+    return "Хороший результат";
+  }
+
+  if (percent >= 0.4) {
+    return "Нужно повторить";
+  }
+
+  return "Есть что добить";
+}
+
 function renderModeState() {
   const count = Object.keys(mistakes).length;
+  const favoriteCount = getFavoriteWords().length;
 
   if (mistakesCount) {
     mistakesCount.textContent = count;
+  }
+
+  if (favoritesCount) {
+    favoritesCount.textContent = favoriteCount;
   }
 
   if (selectedMode === "mistakes" && count === 0) {
@@ -494,21 +542,40 @@ function renderModeState() {
     return;
   }
 
+  if (selectedMode === "favorites" && favoriteCount === 0) {
+    if (modeHint) {
+      modeHint.textContent = "Избранных слов пока нет";
+    }
+    startTestButton.disabled = true;
+    return;
+  }
+
   if (modeHint) {
-    modeHint.textContent = selectedMode === "mistakes" ? `Слов с ошибками: ${count}` : "";
+    if (selectedMode === "mistakes") {
+      modeHint.textContent = `Слов с ошибками: ${count}`;
+    } else if (selectedMode === "favorites") {
+      modeHint.textContent = `Избранных слов: ${favoriteCount}`;
+    } else {
+      modeHint.textContent = "";
+    }
   }
   startTestButton.disabled = false;
 }
 
 function setMode(mode) {
   selectedMode = mode;
+  const labels = {
+    all: "ЕГЭ слова",
+    mistakes: "Мои ошибки",
+    favorites: "Избранное",
+  };
 
   modeOptions.forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
 
   if (modeLabel) {
-    modeLabel.textContent = mode === "mistakes" ? "Мои ошибки" : "ЕГЭ слова";
+    modeLabel.textContent = labels[mode] || labels.all;
   }
 
   renderModeState();
@@ -583,8 +650,7 @@ function renderFavorites() {
     return;
   }
 
-  const favoriteKeys = new Set(Object.keys(favorites));
-  const words = accentWords.filter((word) => favoriteKeys.has(normalizeText(word.correct)));
+  const words = getFavoriteWords();
   favoritesResults.innerHTML = "";
 
   if (!words.length) {
@@ -603,7 +669,7 @@ function renderFavorites() {
 }
 
 function startQuiz() {
-  const sourceWords = selectedMode === "mistakes" ? getMistakeWords() : accentWords;
+  const sourceWords = getSelectedModeWords();
 
   if (!sourceWords.length) {
     renderModeState();
@@ -647,6 +713,16 @@ function finishQuiz() {
   if (!resultScore || !resultDetails || !repeatMistakesButton) {
     showScreen("test");
     return;
+  }
+
+  const scoreAngle = quizQuestions.length ? (quizCorrectCount / quizQuestions.length) * 360 : 0;
+
+  if (resultVerdict) {
+    resultVerdict.textContent = getResultVerdict(quizCorrectCount, quizQuestions.length);
+  }
+
+  if (resultCard) {
+    resultCard.style.setProperty("--score-angle", `${scoreAngle}deg`);
   }
 
   resultScore.textContent = `${quizCorrectCount} из ${quizQuestions.length}`;
