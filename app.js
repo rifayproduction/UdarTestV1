@@ -1,6 +1,7 @@
 const tg = window.Telegram?.WebApp;
 
 const QUIZ_LENGTH = 10;
+const MISTAKES_STORAGE_KEY = "egeAccentMistakes";
 
 const baseAccentWords = [
   { correct: "аэропОрты", wrong: "аэропортЫ" },
@@ -253,15 +254,20 @@ const accentWords = dedupeWords([...baseAccentWords, ...additionalAccentWords]);
 
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
+const modeButtons = document.querySelectorAll("[data-mode]");
 const startTestButton = document.getElementById("startTestButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
 const quizCounter = document.getElementById("quizCounter");
 const answerGrid = document.getElementById("answerGrid");
+const mistakesCount = document.getElementById("mistakesCount");
+const modeHint = document.getElementById("modeHint");
 
 let quizQuestions = [];
 let quizIndex = 0;
 let answerLocked = false;
+let selectedMode = "all";
+let mistakes = loadMistakes();
 
 if (tg) {
   tg.ready();
@@ -343,6 +349,73 @@ function shuffle(items) {
   return [...items].sort(() => Math.random() - 0.5);
 }
 
+function loadMistakes() {
+  try {
+    return JSON.parse(localStorage.getItem(MISTAKES_STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveMistakes() {
+  localStorage.setItem(MISTAKES_STORAGE_KEY, JSON.stringify(mistakes));
+}
+
+function updateMistakeStats(word, isCorrect) {
+  const key = normalizeText(word.correct);
+
+  if (!isCorrect) {
+    mistakes[key] = {
+      correct: word.correct,
+      wrong: word.wrong,
+      count: (mistakes[key]?.count || 0) + 1,
+    };
+    saveMistakes();
+    renderModeState();
+    return;
+  }
+
+  if (selectedMode === "mistakes" && mistakes[key]) {
+    mistakes[key].count -= 1;
+
+    if (mistakes[key].count <= 0) {
+      delete mistakes[key];
+    }
+
+    saveMistakes();
+    renderModeState();
+  }
+}
+
+function getMistakeWords() {
+  const mistakeKeys = new Set(Object.keys(mistakes));
+  return accentWords.filter((word) => mistakeKeys.has(normalizeText(word.correct)));
+}
+
+function renderModeState() {
+  const count = Object.keys(mistakes).length;
+  mistakesCount.textContent = count;
+
+  if (selectedMode === "mistakes" && count === 0) {
+    modeHint.textContent = "Ошибок пока нет";
+    startTestButton.disabled = true;
+    return;
+  }
+
+  modeHint.textContent = selectedMode === "mistakes" ? `Слов с ошибками: ${count}` : "";
+  startTestButton.disabled = false;
+}
+
+function setMode(mode) {
+  selectedMode = mode;
+
+  modeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.mode === mode);
+  });
+
+  renderModeState();
+}
+
 function showScreen(screenName) {
   if (screenName === "favorites") {
     return;
@@ -391,7 +464,14 @@ function renderDictionary() {
 }
 
 function startQuiz() {
-  quizQuestions = shuffle(accentWords).slice(0, QUIZ_LENGTH).map((word) => ({
+  const sourceWords = selectedMode === "mistakes" ? getMistakeWords() : accentWords;
+
+  if (!sourceWords.length) {
+    renderModeState();
+    return;
+  }
+
+  quizQuestions = shuffle(sourceWords).slice(0, QUIZ_LENGTH).map((word) => ({
     ...word,
     answers: shuffle([
       { text: word.correct, isCorrect: true },
@@ -430,8 +510,10 @@ function handleAnswer(button, isCorrect) {
     return;
   }
 
+  const question = quizQuestions[quizIndex];
   answerLocked = true;
   button.classList.add(isCorrect ? "correct" : "wrong");
+  updateMistakeStats(question, isCorrect);
   tg?.HapticFeedback?.notificationOccurred(isCorrect ? "success" : "error");
 
   window.setTimeout(() => {
@@ -452,8 +534,15 @@ tabs.forEach((tab) => {
   });
 });
 
+modeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setMode(button.dataset.mode);
+  });
+});
+
 startTestButton.addEventListener("click", startQuiz);
 dictionarySearch.addEventListener("input", renderDictionary);
 
 renderDictionary();
+renderModeState();
 showScreen("test");
