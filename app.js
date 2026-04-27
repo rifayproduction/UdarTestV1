@@ -282,6 +282,7 @@ let mistakes = loadMistakes();
 let favorites = loadFavorites();
 let quizCorrectCount = 0;
 let quizMistakeCount = 0;
+let currentTestMistakes = [];
 
 if (tg) {
   tg.ready();
@@ -593,6 +594,10 @@ function startQuiz() {
     return;
   }
 
+  startQuestions(sourceWords);
+}
+
+function startQuestions(sourceWords) {
   quizQuestions = shuffle(sourceWords).slice(0, QUIZ_LENGTH).map((word) => ({
     ...word,
     answers: shuffle([
@@ -604,6 +609,7 @@ function startQuiz() {
   answerLocked = false;
   quizCorrectCount = 0;
   quizMistakeCount = 0;
+  currentTestMistakes = [];
   showScreen("quiz");
   renderQuizQuestion();
 }
@@ -611,6 +617,14 @@ function startQuiz() {
 function startAllWordsQuiz() {
   setMode("all");
   startQuiz();
+}
+
+function repeatCurrentMistakes() {
+  if (!currentTestMistakes.length) {
+    return;
+  }
+
+  startQuestions(currentTestMistakes);
 }
 
 function finishQuiz() {
@@ -621,7 +635,7 @@ function finishQuiz() {
 
   resultScore.textContent = `${quizCorrectCount} из ${quizQuestions.length}`;
   resultDetails.textContent = `Ошибок: ${quizMistakeCount}`;
-  repeatMistakesButton.disabled = !Object.keys(mistakes).length;
+  repeatMistakesButton.disabled = !currentTestMistakes.length;
   showScreen("result");
 }
 
@@ -662,6 +676,9 @@ function handleAnswer(button, isCorrect) {
   button.classList.add(isCorrect ? "correct" : "wrong");
   quizCorrectCount += isCorrect ? 1 : 0;
   quizMistakeCount += isCorrect ? 0 : 1;
+  if (!isCorrect) {
+    currentTestMistakes.push(question);
+  }
   updateMistakeStats(question, isCorrect);
   tg?.HapticFeedback?.notificationOccurred(isCorrect ? "success" : "error");
 
@@ -697,8 +714,7 @@ modeOptions.forEach((button) => {
 startTestButton.addEventListener("click", startQuiz);
 restartTestButton?.addEventListener("click", startAllWordsQuiz);
 repeatMistakesButton?.addEventListener("click", () => {
-  setMode("mistakes");
-  startQuiz();
+  repeatCurrentMistakes();
 });
 resultBackButton?.addEventListener("click", () => {
   showScreen("test");
