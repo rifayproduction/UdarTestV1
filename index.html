@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=14">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -49,6 +49,18 @@
       </div>
     </section>
 
+    <section class="screen screen-result" data-screen="result" hidden>
+      <div class="result-card">
+        <p class="result-label">Результат</p>
+        <h2 id="resultScore">0 из 10</h2>
+        <p id="resultDetails">Ошибок: 0</p>
+        <div class="result-actions">
+          <button class="secondary-button" id="repeatMistakesButton" type="button">Повторить ошибки</button>
+          <button class="start-button compact" id="restartTestButton" type="button">Еще тест</button>
+        </div>
+      </div>
+    </section>
+
     <section class="screen screen-dictionary" data-screen="dictionary" hidden>
       <div class="dictionary-header">
         <label class="search-field">
@@ -58,6 +70,13 @@
       </div>
 
       <div class="dictionary-results" id="dictionaryResults" hidden></div>
+    </section>
+
+    <section class="screen screen-favorites" data-screen="favorites" hidden>
+      <div class="favorites-header">
+        <h1>Избранное</h1>
+      </div>
+      <div class="favorites-results" id="favoritesResults"></div>
     </section>
   </main>
 
@@ -76,6 +95,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
