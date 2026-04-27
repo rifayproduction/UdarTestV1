@@ -214,6 +214,17 @@ input {
   font-size: 17px;
 }
 
+.start-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+  box-shadow: none;
+}
+
+.start-button:disabled:active {
+  transform: none;
+  background: var(--accent);
+}
+
 .secondary-button {
   width: 100%;
   min-height: 54px;
@@ -271,8 +282,8 @@ input {
 .result-card {
   width: min(100%, 420px);
   margin: 0 auto;
-  min-height: 294px;
-  padding: 32px 24px 26px;
+  min-height: 372px;
+  padding: 44px 24px 28px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -281,12 +292,30 @@ input {
   border-radius: 24px;
   background: var(--surface);
   text-align: center;
+  overflow: hidden;
+}
+
+.result-card::before {
+  content: "";
+  position: absolute;
+  inset: -80px 36px auto;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 211, 77, 0.14);
+  filter: blur(34px);
+  pointer-events: none;
+}
+
+.result-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .back-button {
   position: absolute;
   top: 16px;
   right: 16px;
+  z-index: 2;
   width: 40px;
   height: 40px;
   border: 0;
@@ -305,10 +334,29 @@ input {
   font-weight: 800;
 }
 
-.result-card h2 {
+.result-verdict {
   margin: 0;
-  font-size: 42px;
+  color: var(--accent);
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.result-score {
+  width: 136px;
+  height: 136px;
+  margin: 18px auto 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #454545 0 56%, transparent 57%),
+    conic-gradient(var(--accent) var(--score-angle, 0deg), rgba(255, 255, 255, 0.16) 0);
+  color: var(--text);
+  font-size: 30px;
   line-height: 1.1;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .result-card p:last-of-type {
