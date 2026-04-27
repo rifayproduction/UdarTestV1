@@ -808,9 +808,30 @@ body[data-screen="result"] .screen {
   display: grid;
   place-items: center;
   border-radius: 9px;
-  font-size: 13px;
-  font-weight: 800;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.tab-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tab-icon .bookmark-icon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.tab-icon .bookmark-icon path:last-child {
+  fill: var(--tab-active);
+}
+
+.tab-item.active .tab-icon .bookmark-icon path:last-child {
+  fill: var(--text);
 }
 
 .tab-item span:last-child {
