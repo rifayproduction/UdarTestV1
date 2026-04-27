@@ -254,7 +254,10 @@ const accentWords = dedupeWords([...baseAccentWords, ...additionalAccentWords]);
 
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
-const modeButtons = document.querySelectorAll("[data-mode]");
+const modeOptions = document.querySelectorAll("[data-mode]");
+const modeTrigger = document.getElementById("modeTrigger");
+const modeLabel = document.getElementById("modeLabel");
+const modeMenu = document.getElementById("modeMenu");
 const startTestButton = document.getElementById("startTestButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
@@ -416,11 +419,24 @@ function renderModeState() {
 function setMode(mode) {
   selectedMode = mode;
 
-  modeButtons.forEach((button) => {
+  modeOptions.forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
 
+  if (modeLabel) {
+    modeLabel.textContent = mode === "mistakes" ? "Мои ошибки" : "ЕГЭ слова";
+  }
+
   renderModeState();
+}
+
+function setModeMenuOpen(isOpen) {
+  if (!modeMenu || !modeTrigger) {
+    return;
+  }
+
+  modeMenu.hidden = !isOpen;
+  modeTrigger.setAttribute("aria-expanded", String(isOpen));
 }
 
 function showScreen(screenName) {
@@ -541,9 +557,14 @@ tabs.forEach((tab) => {
   });
 });
 
-modeButtons.forEach((button) => {
+modeTrigger?.addEventListener("click", () => {
+  setModeMenuOpen(modeMenu.hidden);
+});
+
+modeOptions.forEach((button) => {
   button.addEventListener("click", () => {
     setMode(button.dataset.mode);
+    setModeMenuOpen(false);
   });
 });
 
