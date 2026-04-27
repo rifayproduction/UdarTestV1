@@ -262,10 +262,12 @@ const modeMenu = document.getElementById("modeMenu");
 const startTestButton = document.getElementById("startTestButton");
 const restartTestButton = document.getElementById("restartTestButton");
 const repeatMistakesButton = document.getElementById("repeatMistakesButton");
+const resultBackButton = document.getElementById("resultBackButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
 const favoritesResults = document.getElementById("favoritesResults");
 const quizCounter = document.getElementById("quizCounter");
+const quizFavoriteButton = document.getElementById("quizFavoriteButton");
 const answerGrid = document.getElementById("answerGrid");
 const resultScore = document.getElementById("resultScore");
 const resultDetails = document.getElementById("resultDetails");
@@ -404,7 +406,7 @@ function toggleFavorite(word) {
   saveFavorites();
   renderDictionary();
   renderFavorites();
-  renderQuizFavoriteButtons();
+  renderQuizFavoriteButton();
 }
 
 function createFavoriteButton(word) {
@@ -421,6 +423,16 @@ function createFavoriteButton(word) {
   });
 
   return button;
+}
+
+function updateFavoriteButton(button, word) {
+  if (!button || !word) {
+    return;
+  }
+
+  const active = isFavorite(word);
+  button.classList.toggle("active", active);
+  button.setAttribute("aria-label", active ? "Убрать из избранного" : "Добавить в избранное");
 }
 
 function updateMistakeStats(word, isCorrect) {
@@ -596,6 +608,11 @@ function startQuiz() {
   renderQuizQuestion();
 }
 
+function startAllWordsQuiz() {
+  setMode("all");
+  startQuiz();
+}
+
 function finishQuiz() {
   if (!resultScore || !resultDetails || !repeatMistakesButton) {
     showScreen("test");
@@ -614,30 +631,25 @@ function renderQuizQuestion() {
 
   quizCounter.textContent = `${quizIndex + 1} из ${quizQuestions.length}`;
   answerGrid.innerHTML = "";
+  renderQuizFavoriteButton();
 
   question.answers.forEach((answer) => {
-    const wrap = document.createElement("div");
-    wrap.className = "answer-wrap";
     const button = document.createElement("button");
     button.className = "answer-button";
     button.type = "button";
     button.textContent = formatStress(answer.text);
     button.addEventListener("click", () => handleAnswer(button, answer.isCorrect));
-    wrap.append(button, createFavoriteButton(question));
-    answerGrid.append(wrap);
+    answerGrid.append(button);
   });
 }
 
-function renderQuizFavoriteButtons() {
+function renderQuizFavoriteButton() {
   if (!quizQuestions.length || !quizQuestions[quizIndex]) {
+    updateFavoriteButton(quizFavoriteButton, null);
     return;
   }
 
-  answerGrid.querySelectorAll(".favorite-button").forEach((button) => {
-    const active = isFavorite(quizQuestions[quizIndex]);
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-label", active ? "Убрать из избранного" : "Добавить в избранное");
-  });
+  updateFavoriteButton(quizFavoriteButton, quizQuestions[quizIndex]);
 }
 
 function handleAnswer(button, isCorrect) {
@@ -683,10 +695,18 @@ modeOptions.forEach((button) => {
 });
 
 startTestButton.addEventListener("click", startQuiz);
-restartTestButton?.addEventListener("click", startQuiz);
+restartTestButton?.addEventListener("click", startAllWordsQuiz);
 repeatMistakesButton?.addEventListener("click", () => {
   setMode("mistakes");
   startQuiz();
+});
+resultBackButton?.addEventListener("click", () => {
+  showScreen("test");
+});
+quizFavoriteButton?.addEventListener("click", () => {
+  if (quizQuestions[quizIndex]) {
+    toggleFavorite(quizQuestions[quizIndex]);
+  }
 });
 dictionarySearch.addEventListener("input", renderDictionary);
 
