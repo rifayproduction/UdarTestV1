@@ -381,7 +381,7 @@ body[data-screen="result"] .screen {
   box-shadow: 0 10px 22px var(--shadow);
 }
 
-.quiz-head,
+.quiz-top,
 .dictionary-header,
 .dictionary-results,
 .favorites-header,
@@ -398,6 +398,25 @@ body[data-screen="result"] .screen {
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
+}
+
+.quiz-progress {
+  height: 7px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.quiz-progress span {
+  width: 0;
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #ffe47d);
+  box-shadow: 0 0 18px rgba(255, 211, 77, 0.28);
+  transition: width 260ms ease;
 }
 
 .quiz-favorite {
@@ -523,37 +542,56 @@ body[data-screen="result"] .screen {
 
 .answer-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .answer-button {
   width: 100%;
-  min-height: 58px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 0 16px;
-  background: var(--surface-strong);
+  min-height: 66px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 0 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.07)),
+    rgba(255, 255, 255, 0.1);
   color: var(--text);
   font-size: 18px;
   font-weight: 800;
   cursor: pointer;
-  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 22px rgba(0, 0, 0, 0.13);
+  transition:
+    transform 150ms ease,
+    background 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    color 150ms ease;
 }
 
 .answer-button:active {
-  transform: scale(0.99);
+  transform: translateY(1px) scale(0.995);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 14px rgba(0, 0, 0, 0.14);
 }
 
 .answer-button.correct {
   border-color: transparent;
-  background: var(--green);
+  background: linear-gradient(180deg, #5ee491, var(--green));
   color: #13351f;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 12px 26px rgba(63, 212, 124, 0.22);
 }
 
 .answer-button.wrong {
   border-color: transparent;
-  background: var(--red);
+  background: linear-gradient(180deg, #ff7474, var(--red));
   color: #401515;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 12px 26px rgba(255, 92, 92, 0.2);
 }
 
 .search-field {
