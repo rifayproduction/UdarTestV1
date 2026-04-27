@@ -267,9 +267,12 @@ const accentWords = dedupeWords(
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
 const tabBar = document.querySelector(".tab-bar");
+const modeSelect = document.getElementById("modeSelect");
 const modeOptions = document.querySelectorAll("[data-mode]");
 const modeTrigger = document.getElementById("modeTrigger");
+const modeIcon = document.getElementById("modeIcon");
 const modeLabel = document.getElementById("modeLabel");
+const modeMeta = document.getElementById("modeMeta");
 const modeMenu = document.getElementById("modeMenu");
 const startTestButton = document.getElementById("startTestButton");
 const restartTestButton = document.getElementById("restartTestButton");
@@ -285,6 +288,7 @@ const resultCard = document.querySelector(".result-card");
 const resultVerdict = document.getElementById("resultVerdict");
 const resultScore = document.getElementById("resultScore");
 const resultDetails = document.getElementById("resultDetails");
+const allWordsCount = document.getElementById("allWordsCount");
 const mistakesCount = document.getElementById("mistakesCount");
 const favoritesCount = document.getElementById("favoritesCount");
 const modeHint = document.getElementById("modeHint");
@@ -536,9 +540,64 @@ function getResultTone(correctCount, totalCount) {
   return "low";
 }
 
+function formatWordCount(count) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+
+  if (lastTwo >= 11 && lastTwo <= 14) {
+    return `${count} слов`;
+  }
+
+  if (last === 1) {
+    return `${count} слово`;
+  }
+
+  if (last >= 2 && last <= 4) {
+    return `${count} слова`;
+  }
+
+  return `${count} слов`;
+}
+
+function getModeDetails(mode) {
+  const mistakeCount = Object.keys(mistakes).length;
+  const favoriteCount = getFavoriteWords().length;
+
+  const details = {
+    all: {
+      icon: "А",
+      label: "ЕГЭ слова",
+      meta: formatWordCount(accentWords.length),
+      count: accentWords.length,
+      empty: false,
+    },
+    mistakes: {
+      icon: "!",
+      label: "Мои ошибки",
+      meta: mistakeCount ? formatWordCount(mistakeCount) : "Ошибок пока нет",
+      count: mistakeCount,
+      empty: mistakeCount === 0,
+    },
+    favorites: {
+      icon: "★",
+      label: "Избранное",
+      meta: favoriteCount ? formatWordCount(favoriteCount) : "Избранных слов пока нет",
+      count: favoriteCount,
+      empty: favoriteCount === 0,
+    },
+  };
+
+  return details[mode] || details.all;
+}
+
 function renderModeState() {
   const count = Object.keys(mistakes).length;
   const favoriteCount = getFavoriteWords().length;
+  const currentMode = getModeDetails(selectedMode);
+
+  if (allWordsCount) {
+    allWordsCount.textContent = accentWords.length;
+  }
 
   if (mistakesCount) {
     mistakesCount.textContent = count;
@@ -548,49 +607,35 @@ function renderModeState() {
     favoritesCount.textContent = favoriteCount;
   }
 
-  if (selectedMode === "mistakes" && count === 0) {
-    if (modeHint) {
-      modeHint.textContent = "Ошибок пока нет";
-    }
-    startTestButton.disabled = true;
-    return;
+  modeOptions.forEach((button) => {
+    button.classList.toggle("empty", getModeDetails(button.dataset.mode).empty);
+  });
+
+  if (modeIcon) {
+    modeIcon.textContent = currentMode.icon;
   }
 
-  if (selectedMode === "favorites" && favoriteCount === 0) {
-    if (modeHint) {
-      modeHint.textContent = "Избранных слов пока нет";
-    }
-    startTestButton.disabled = true;
-    return;
+  if (modeLabel) {
+    modeLabel.textContent = currentMode.label;
+  }
+
+  if (modeMeta) {
+    modeMeta.textContent = currentMode.meta;
   }
 
   if (modeHint) {
-    if (selectedMode === "mistakes") {
-      modeHint.textContent = `Слов с ошибками: ${count}`;
-    } else if (selectedMode === "favorites") {
-      modeHint.textContent = `Избранных слов: ${favoriteCount}`;
-    } else {
-      modeHint.textContent = "";
-    }
+    modeHint.textContent = currentMode.empty ? currentMode.meta : "";
   }
-  startTestButton.disabled = false;
+
+  startTestButton.disabled = currentMode.empty;
 }
 
 function setMode(mode) {
   selectedMode = mode;
-  const labels = {
-    all: "ЕГЭ слова",
-    mistakes: "Мои ошибки",
-    favorites: "Избранное",
-  };
 
   modeOptions.forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
-
-  if (modeLabel) {
-    modeLabel.textContent = labels[mode] || labels.all;
-  }
 
   renderModeState();
 }
@@ -600,7 +645,8 @@ function setModeMenuOpen(isOpen) {
     return;
   }
 
-  modeMenu.hidden = !isOpen;
+  modeMenu.classList.toggle("open", isOpen);
+  modeMenu.setAttribute("aria-hidden", String(!isOpen));
   modeTrigger.setAttribute("aria-expanded", String(isOpen));
 }
 
@@ -610,6 +656,10 @@ function showScreen(screenName) {
     : "test";
 
   document.body.dataset.screen = nextScreen;
+
+  if (nextScreen !== "test") {
+    setModeMenuOpen(false);
+  }
 
   screens.forEach((screen) => {
     const isActive = screen.dataset.screen === nextScreen;
@@ -811,7 +861,7 @@ tabs.forEach((tab) => {
 });
 
 modeTrigger?.addEventListener("click", () => {
-  setModeMenuOpen(modeMenu.hidden);
+  setModeMenuOpen(!modeMenu?.classList.contains("open"));
 });
 
 modeOptions.forEach((button) => {
@@ -819,6 +869,12 @@ modeOptions.forEach((button) => {
     setMode(button.dataset.mode);
     setModeMenuOpen(false);
   });
+});
+
+document.addEventListener("click", (event) => {
+  if (modeSelect && !modeSelect.contains(event.target)) {
+    setModeMenuOpen(false);
+  }
 });
 
 startTestButton.addEventListener("click", startQuiz);
