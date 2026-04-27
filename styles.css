@@ -28,11 +28,13 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
+  position: relative;
+  isolation: isolate;
   font-family: "Noto Sans", "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at 50% 12%, rgba(255, 211, 77, 0.16), transparent 26%),
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 34%),
-    linear-gradient(180deg, #373737 0%, var(--bg) 44%, var(--bg-deep) 100%),
+    linear-gradient(180deg, rgba(37, 37, 37, 0.18), rgba(37, 37, 37, 0.76)),
+    radial-gradient(circle at 50% 10%, rgba(255, 211, 77, 0.13), transparent 30%),
+    url("assets/accent-constellations.png") center top / cover no-repeat,
     var(--bg);
   color: var(--text);
 }
@@ -41,13 +43,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 211, 77, 0.06) 0 1px, transparent 1px);
-  background-position: 0 0, 12px 14px;
-  background-size: 28px 28px, 36px 36px;
-  opacity: 0.22;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 28%, transparent 0 38%, rgba(0, 0, 0, 0.2) 76%, rgba(0, 0, 0, 0.42) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.28));
   pointer-events: none;
 }
 
@@ -64,6 +63,8 @@ input {
 .app-shell {
   min-height: 100vh;
   min-height: 100dvh;
+  position: relative;
+  z-index: 1;
   padding: max(44px, env(safe-area-inset-top)) 22px calc(112px + env(safe-area-inset-bottom));
 }
 
@@ -726,6 +727,7 @@ body[data-screen="result"] .screen {
 
 .tab-bar {
   position: fixed;
+  z-index: 2;
   left: 14px;
   right: 14px;
   bottom: max(14px, env(safe-area-inset-bottom));
