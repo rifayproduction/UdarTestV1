@@ -7,12 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=26">
+  <link rel="stylesheet" href="styles.css?v=29">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <main class="app-shell">
     <section class="screen screen-home active" data-screen="test">
+      <button class="info-button" id="infoButton" type="button" aria-label="О приложении">
+        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+          <path d="M12 17v-6" />
+          <path d="M12 7.2h.01" />
+          <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        </svg>
+      </button>
       <div class="hero" aria-label="Главный экран">
         <h1>Ударения</h1>
         <p>Русского языка</p>
@@ -24,7 +31,7 @@
             <span class="mode-trigger-copy">
               <span class="mode-caption">Режим тренировки</span>
               <span class="mode-current">
-                <span class="mode-current-icon" id="modeIcon" aria-hidden="true">А</span>
+                <span class="mode-current-icon" id="modeIcon" aria-hidden="true"></span>
                 <span class="mode-current-text">
                   <span id="modeLabel">ЕГЭ слова</span>
                   <small id="modeMeta">Вся база слов</small>
@@ -35,7 +42,14 @@
           </button>
           <div class="mode-menu" id="modeMenu" aria-hidden="true">
             <button class="mode-option active" type="button" data-mode="all">
-              <span class="mode-option-icon" aria-hidden="true">А</span>
+              <span class="mode-option-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M6.5 4.5h8.2L18 7.8v11.7H6.5v-15Z" />
+                  <path d="M14.5 4.5v3.5H18" />
+                  <path d="M9 12h6" />
+                  <path d="m9 16 1.4 1.4L14 13.8" />
+                </svg>
+              </span>
               <span class="mode-option-text">
                 <strong>ЕГЭ слова</strong>
                 <small>Вся база для тренировки</small>
@@ -43,7 +57,13 @@
               <span class="mode-badge" id="allWordsCount">0</span>
             </button>
             <button class="mode-option" type="button" data-mode="mistakes">
-              <span class="mode-option-icon" aria-hidden="true">!</span>
+              <span class="mode-option-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M12 4.2 21 19H3L12 4.2Z" />
+                  <path d="M12 9v5" />
+                  <path d="M12 17.2h.01" />
+                </svg>
+              </span>
               <span class="mode-option-text">
                 <strong>Мои ошибки</strong>
                 <small>Слова, где ты ошибался</small>
@@ -51,12 +71,33 @@
               <span class="mode-badge" id="mistakesCount">0</span>
             </button>
             <button class="mode-option" type="button" data-mode="favorites">
-              <span class="mode-option-icon" aria-hidden="true">★</span>
+              <span class="mode-option-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" class="bookmark-icon">
+                  <path d="M6 4.8C6 3.8 6.8 3 7.8 3h8.4c1 0 1.8.8 1.8 1.8V21l-6-3.4L6 21V4.8Z" />
+                  <path d="m12 7.1 1.15 2.33 2.57.37-1.86 1.82.44 2.56L12 12.96l-2.3 1.22.44-2.56L8.28 9.8l2.57-.37L12 7.1Z" />
+                </svg>
+              </span>
               <span class="mode-option-text">
                 <strong>Избранное</strong>
                 <small>Только сохраненные слова</small>
               </span>
               <span class="mode-badge" id="favoritesCount">0</span>
+            </button>
+            <button class="mode-option" type="button" data-mode="allWords">
+              <span class="mode-option-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M6 5.5h10.5A1.5 1.5 0 0 1 18 7v11.5H7.5A2.5 2.5 0 0 1 5 16V6.5a1 1 0 0 1 1-1Z" />
+                  <path d="M8 5.5V18" />
+                  <path d="M10.5 9h4.5" />
+                  <path d="M10.5 12h3.5" />
+                  <path d="M18 8h1a1 1 0 0 1 1 1v11H8" />
+                </svg>
+              </span>
+              <span class="mode-option-text">
+                <strong>Все слова</strong>
+                <small>Все сложные ударения</small>
+              </span>
+              <span class="mode-badge">500</span>
             </button>
           </div>
         </div>
@@ -123,6 +164,20 @@
       </div>
       <div class="favorites-results" id="favoritesResults"></div>
     </section>
+
+    <section class="screen screen-info" data-screen="info" hidden>
+      <div class="info-card">
+        <button class="back-button info-back" id="infoBackButton" type="button" aria-label="Вернуться на главный экран">↩</button>
+        <p class="info-label">О приложении</p>
+        <h1>Ударения</h1>
+        <div class="info-text">
+          <p>Здесь вы можете закрепить ударения на более чем 1000 слов. Приложение будет полезно школьникам, которые готовятся к ОГЭ или ЕГЭ по русскому языку, а также всем, кто хочет увереннее запоминать правильное произношение.</p>
+          <p>В любой момент слово можно добавить в избранное и практиковать отдельным режимом. Также есть тренировка ошибок: приложение запоминает сложные слова и помогает постепенно оттачивать именно их.</p>
+          <p>Выбирайте режим, настраивайте количество слов в тесте и возвращайтесь к практике каждый день. Короткие регулярные тренировки помогают быстрее закреплять ударения и меньше путаться в похожих вариантах.</p>
+        </div>
+        <p class="info-signature">rifayprod</p>
+      </div>
+    </section>
   </main>
 
   <nav class="tab-bar" aria-label="Навигация">
@@ -160,6 +215,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=26"></script>
+  <script src="app.js?v=29"></script>
 </body>
 </html>
