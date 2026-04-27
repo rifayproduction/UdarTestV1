@@ -271,7 +271,12 @@ input {
 .result-card {
   width: min(100%, 420px);
   margin: 0 auto;
-  padding: 24px;
+  min-height: 294px;
+  padding: 32px 24px 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   background: var(--surface);
@@ -280,10 +285,10 @@ input {
 
 .back-button {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 42px;
-  height: 42px;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
   border: 0;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.12);
@@ -315,7 +320,7 @@ input {
 .result-actions {
   display: grid;
   gap: 10px;
-  margin-top: 24px;
+  margin-top: 28px;
 }
 
 .answer-grid {
