@@ -376,7 +376,7 @@ input {
   }
 
   .center-stage {
-    align-items: start;
+    align-items: center;
     padding-top: min(14vh, 94px);
   }
 
