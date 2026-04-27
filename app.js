@@ -280,6 +280,8 @@ const startTestButton = document.getElementById("startTestButton");
 const restartTestButton = document.getElementById("restartTestButton");
 const repeatMistakesButton = document.getElementById("repeatMistakesButton");
 const resultBackButton = document.getElementById("resultBackButton");
+const infoButton = document.getElementById("infoButton");
+const infoBackButton = document.getElementById("infoBackButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
 const dictionaryResults = document.getElementById("dictionaryResults");
 const favoritesResults = document.getElementById("favoritesResults");
@@ -307,6 +309,39 @@ let favorites = loadFavorites();
 let quizCorrectCount = 0;
 let quizMistakeCount = 0;
 let currentTestMistakes = [];
+
+const modeIconMarkup = {
+  all: `
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path d="M6.5 4.5h8.2L18 7.8v11.7H6.5v-15Z" />
+      <path d="M14.5 4.5v3.5H18" />
+      <path d="M9 12h6" />
+      <path d="m9 16 1.4 1.4L14 13.8" />
+    </svg>
+  `,
+  mistakes: `
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path d="M12 4.2 21 19H3L12 4.2Z" />
+      <path d="M12 9v5" />
+      <path d="M12 17.2h.01" />
+    </svg>
+  `,
+  favorites: `
+    <svg viewBox="0 0 24 24" focusable="false" class="bookmark-icon">
+      <path d="M6 4.8C6 3.8 6.8 3 7.8 3h8.4c1 0 1.8.8 1.8 1.8V21l-6-3.4L6 21V4.8Z" />
+      <path d="m12 7.1 1.15 2.33 2.57.37-1.86 1.82.44 2.56L12 12.96l-2.3 1.22.44-2.56L8.28 9.8l2.57-.37L12 7.1Z" />
+    </svg>
+  `,
+  allWords: `
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path d="M6 5.5h10.5A1.5 1.5 0 0 1 18 7v11.5H7.5A2.5 2.5 0 0 1 5 16V6.5a1 1 0 0 1 1-1Z" />
+      <path d="M8 5.5V18" />
+      <path d="M10.5 9h4.5" />
+      <path d="M10.5 12h3.5" />
+      <path d="M18 8h1a1 1 0 0 1 1 1v11H8" />
+    </svg>
+  `,
+};
 
 if (tg) {
   tg.ready();
@@ -525,6 +560,10 @@ function getSelectedModeWords() {
     return getFavoriteWords();
   }
 
+  if (selectedMode === "allWords") {
+    return accentWords;
+  }
+
   return accentWords;
 }
 
@@ -589,25 +628,32 @@ function getModeDetails(mode) {
 
   const details = {
     all: {
-      icon: "А",
+      icon: "all",
       label: "ЕГЭ слова",
       meta: formatWordCount(accentWords.length),
       count: accentWords.length,
       empty: false,
     },
     mistakes: {
-      icon: "!",
+      icon: "mistakes",
       label: "Мои ошибки",
       meta: mistakeCount ? formatWordCount(mistakeCount) : "Ошибок пока нет",
       count: mistakeCount,
       empty: mistakeCount === 0,
     },
     favorites: {
-      icon: "★",
+      icon: "favorites",
       label: "Избранное",
       meta: favoriteCount ? formatWordCount(favoriteCount) : "Избранных слов пока нет",
       count: favoriteCount,
       empty: favoriteCount === 0,
+    },
+    allWords: {
+      icon: "allWords",
+      label: "Все слова",
+      meta: "Все сложные ударения",
+      count: 500,
+      empty: false,
     },
   };
 
@@ -636,7 +682,7 @@ function renderModeState() {
   });
 
   if (modeIcon) {
-    modeIcon.textContent = currentMode.icon;
+    modeIcon.innerHTML = modeIconMarkup[currentMode.icon] || modeIconMarkup.all;
   }
 
   if (modeLabel) {
@@ -675,7 +721,7 @@ function setModeMenuOpen(isOpen) {
 }
 
 function showScreen(screenName) {
-  const nextScreen = ["dictionary", "quiz", "result", "favorites"].includes(screenName)
+  const nextScreen = ["dictionary", "quiz", "result", "favorites", "info"].includes(screenName)
     ? screenName
     : "test";
 
@@ -697,7 +743,7 @@ function showScreen(screenName) {
   });
 
   if (tabBar) {
-    tabBar.hidden = nextScreen === "quiz" || nextScreen === "result";
+    tabBar.hidden = nextScreen === "quiz" || nextScreen === "result" || nextScreen === "info";
   }
 
   if (nextScreen === "dictionary") {
@@ -923,6 +969,12 @@ repeatMistakesButton?.addEventListener("click", () => {
   repeatCurrentMistakes();
 });
 resultBackButton?.addEventListener("click", () => {
+  showScreen("test");
+});
+infoButton?.addEventListener("click", () => {
+  showScreen("info");
+});
+infoBackButton?.addEventListener("click", () => {
   showScreen("test");
 });
 quizFavoriteButton?.addEventListener("click", () => {
