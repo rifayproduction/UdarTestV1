@@ -283,8 +283,17 @@ const resultBackButton = document.getElementById("resultBackButton");
 const infoButton = document.getElementById("infoButton");
 const infoBackButton = document.getElementById("infoBackButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
+const dictionaryIntro = document.getElementById("dictionaryIntro");
+const dictionarySummary = document.getElementById("dictionarySummary");
 const dictionaryResults = document.getElementById("dictionaryResults");
+const popularWordButtons = document.querySelectorAll("[data-search-word]");
+const wordInfoSheet = document.getElementById("wordInfoSheet");
+const wordInfoClose = document.getElementById("wordInfoClose");
+const wordInfoTitle = document.getElementById("wordInfoTitle");
+const wordInfoText = document.getElementById("wordInfoText");
 const favoritesResults = document.getElementById("favoritesResults");
+const favoritesSummary = document.getElementById("favoritesSummary");
+const startFavoritesButton = document.getElementById("startFavoritesButton");
 const quizCounter = document.getElementById("quizCounter");
 const quizProgress = document.getElementById("quizProgress");
 const quizProgressBar = document.getElementById("quizProgressBar");
@@ -341,6 +350,13 @@ const modeIconMarkup = {
       <path d="M18 8h1a1 1 0 0 1 1 1v11H8" />
     </svg>
   `,
+};
+
+const wordInfo = {
+  жалюзи: {
+    title: "жалюзи́",
+    text: "Жалюзи — это оконные шторы из тонких пластин, которые поворачиваются и регулируют свет. Слово пришло из французского языка и в русском языке не изменяется по падежам. Норма произношения — с ударением на последний слог: жалюзи́.",
+  },
 };
 
 if (tg) {
@@ -567,6 +583,34 @@ function getSelectedModeWords() {
   return accentWords;
 }
 
+function getWordInfo(word) {
+  return wordInfo[normalizeText(word.correct)];
+}
+
+function openWordInfo(info) {
+  if (!wordInfoSheet || !wordInfoTitle || !wordInfoText || !info) {
+    return;
+  }
+
+  wordInfoTitle.textContent = info.title;
+  wordInfoText.textContent = info.text;
+  wordInfoSheet.hidden = false;
+  requestAnimationFrame(() => {
+    wordInfoSheet.classList.add("open");
+  });
+}
+
+function closeWordInfo() {
+  if (!wordInfoSheet) {
+    return;
+  }
+
+  wordInfoSheet.classList.remove("open");
+  window.setTimeout(() => {
+    wordInfoSheet.hidden = true;
+  }, 180);
+}
+
 function getResultVerdict(correctCount, totalCount) {
   const percent = totalCount ? correctCount / totalCount : 0;
 
@@ -731,6 +775,10 @@ function showScreen(screenName) {
     setModeMenuOpen(false);
   }
 
+  if (nextScreen !== "dictionary") {
+    closeWordInfo();
+  }
+
   screens.forEach((screen) => {
     const isActive = screen.dataset.screen === nextScreen;
     screen.hidden = !isActive;
@@ -758,6 +806,15 @@ function showScreen(screenName) {
 function renderDictionary() {
   const query = normalizeText(dictionarySearch.value.trim());
   dictionaryResults.innerHTML = "";
+
+  if (dictionaryIntro) {
+    dictionaryIntro.hidden = Boolean(query);
+  }
+
+  if (dictionarySummary) {
+    dictionarySummary.hidden = !query;
+  }
+
   dictionaryResults.hidden = !query;
 
   if (!query) {
@@ -766,17 +823,51 @@ function renderDictionary() {
 
   const words = accentWords.filter((word) => normalizeText(word.correct).includes(query));
 
+  if (dictionarySummary) {
+    dictionarySummary.textContent = words.length
+      ? `Найдено: ${formatWordCount(words.length)}`
+      : "Ничего не найдено";
+  }
+
   if (!words.length) {
-    dictionaryResults.innerHTML = '<div class="empty-state">Ничего не найдено</div>';
+    dictionaryResults.innerHTML = `
+      <div class="empty-state dictionary-empty-result">
+        <strong>Такого слова пока нет</strong>
+        <span>Попробуй изменить запрос или найти слово по другой части.</span>
+      </div>
+    `;
     return;
   }
 
   words.forEach((word) => {
     const row = document.createElement("div");
-    row.className = "word-row";
+    row.className = "word-row dictionary-row";
+    const copy = document.createElement("span");
+    copy.className = "word-copy";
+    const wordLine = document.createElement("span");
+    wordLine.className = "word-line";
     const text = document.createElement("span");
+    const info = getWordInfo(word);
     text.textContent = formatStress(word.correct);
-    row.append(text, createFavoriteButton(word));
+
+    wordLine.append(text);
+
+    if (info) {
+      const helpButton = document.createElement("button");
+      helpButton.className = "word-help-button";
+      helpButton.type = "button";
+      helpButton.textContent = "?";
+      helpButton.setAttribute("aria-label", `Описание слова ${formatStress(word.correct)}`);
+      helpButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openWordInfo(info);
+      });
+      wordLine.append(helpButton);
+    }
+
+    copy.append(wordLine);
+
+    row.append(copy, createFavoriteButton(word));
     dictionaryResults.append(row);
   });
 }
@@ -789,17 +880,41 @@ function renderFavorites() {
   const words = getFavoriteWords();
   favoritesResults.innerHTML = "";
 
+  if (favoritesSummary) {
+    favoritesSummary.textContent = formatWordCount(words.length) + " сохранено";
+  }
+
+  if (startFavoritesButton) {
+    startFavoritesButton.hidden = !words.length;
+  }
+
   if (!words.length) {
-    favoritesResults.innerHTML = '<div class="empty-state">Пока нет избранных слов</div>';
+    favoritesResults.innerHTML = `
+      <div class="empty-state favorites-empty">
+        <span class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false" class="bookmark-icon">
+            <path d="M6 4.8C6 3.8 6.8 3 7.8 3h8.4c1 0 1.8.8 1.8 1.8V21l-6-3.4L6 21V4.8Z" />
+            <path d="m12 7.1 1.15 2.33 2.57.37-1.86 1.82.44 2.56L12 12.96l-2.3 1.22.44-2.56L8.28 9.8l2.57-.37L12 7.1Z" />
+          </svg>
+        </span>
+        <strong>Пока нет избранных слов</strong>
+        <span>Добавляй сложные слова звездочкой в тесте или словаре, чтобы тренировать их отдельно.</span>
+      </div>
+    `;
     return;
   }
 
   words.forEach((word) => {
     const row = document.createElement("div");
-    row.className = "word-row";
+    row.className = "word-row favorite-row";
+    const copy = document.createElement("span");
+    copy.className = "word-copy";
     const text = document.createElement("span");
+    const note = document.createElement("small");
     text.textContent = formatStress(word.correct);
-    row.append(text, createFavoriteButton(word));
+    note.textContent = "сохраненное слово";
+    copy.append(text, note);
+    row.append(copy, createFavoriteButton(word));
     favoritesResults.append(row);
   });
 }
@@ -971,6 +1086,10 @@ repeatMistakesButton?.addEventListener("click", () => {
 resultBackButton?.addEventListener("click", () => {
   showScreen("test");
 });
+startFavoritesButton?.addEventListener("click", () => {
+  setMode("favorites");
+  startQuiz();
+});
 infoButton?.addEventListener("click", () => {
   showScreen("info");
 });
@@ -983,6 +1102,14 @@ quizFavoriteButton?.addEventListener("click", () => {
   }
 });
 dictionarySearch.addEventListener("input", renderDictionary);
+popularWordButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    dictionarySearch.value = button.dataset.searchWord;
+    renderDictionary();
+    dictionarySearch.focus();
+  });
+});
+wordInfoClose?.addEventListener("click", closeWordInfo);
 
 renderDictionary();
 renderFavorites();
