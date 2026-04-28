@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Ударения</title>
+  <title>AccentUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=30">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=36">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -21,8 +21,8 @@
         </svg>
       </button>
       <div class="hero" aria-label="Главный экран">
-        <h1>Ударения</h1>
-        <p>Русского языка</p>
+        <h1 class="brand-title">Accent<span>Up</span></h1>
+        <p>Ударения русского языка</p>
       </div>
 
       <div class="center-stage">
@@ -155,12 +155,41 @@
         </label>
       </div>
 
+      <div class="dictionary-intro" id="dictionaryIntro">
+        <div class="dictionary-empty-card">
+          <span class="empty-icon dictionary-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h12v16H7a2.5 2.5 0 0 0-2.5 2.5v-16Z" />
+              <path d="M7 19h12" />
+              <path d="M8 7h7" />
+              <path d="M8 10h6" />
+            </svg>
+          </span>
+          <strong>Найди слово</strong>
+          <span>Введи часть слова, чтобы увидеть правильное ударение и подсказки для сложных слов.</span>
+        </div>
+        <div class="popular-words">
+          <p>Популярные слова</p>
+          <div class="popular-word-list">
+            <button type="button" data-search-word="звонит">звони́т</button>
+            <button type="button" data-search-word="каталог">катало́г</button>
+            <button type="button" data-search-word="жалюзи">жалюзи́</button>
+            <button type="button" data-search-word="торты">то́рты</button>
+            <button type="button" data-search-word="квартал">кварта́л</button>
+            <button type="button" data-search-word="свекла">свёкла</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="dictionary-summary" id="dictionarySummary" hidden></p>
       <div class="dictionary-results" id="dictionaryResults" hidden></div>
     </section>
 
     <section class="screen screen-favorites" data-screen="favorites" hidden>
       <div class="favorites-header">
         <h1>Избранное</h1>
+        <p id="favoritesSummary">0 слов сохранено</p>
+        <button class="start-button favorites-start" id="startFavoritesButton" type="button">Тренировать избранное</button>
       </div>
       <div class="favorites-results" id="favoritesResults"></div>
     </section>
@@ -169,7 +198,7 @@
       <div class="info-card">
         <button class="back-button info-back" id="infoBackButton" type="button" aria-label="Вернуться на главный экран">↩</button>
         <p class="info-label">О приложении</p>
-        <h1>Ударения</h1>
+        <h1 class="brand-title">Accent<span>Up</span></h1>
         <div class="info-text">
           <p>Здесь вы можете закрепить ударения на более чем 1000 слов. Приложение будет полезно школьникам, которые готовятся к ОГЭ или ЕГЭ по русскому языку, а также всем, кто хочет увереннее запоминать правильное произношение.</p>
           <p>В любой момент слово можно добавить в избранное и практиковать отдельным режимом. Также есть тренировка ошибок: приложение запоминает сложные слова и помогает постепенно оттачивать именно их.</p>
@@ -179,6 +208,15 @@
       </div>
     </section>
   </main>
+
+  <div class="word-info-sheet" id="wordInfoSheet" hidden>
+    <div class="word-info-card">
+      <button class="word-info-close" id="wordInfoClose" type="button" aria-label="Закрыть подсказку">×</button>
+      <p>Подсказка</p>
+      <h2 id="wordInfoTitle">жалюзи́</h2>
+      <span id="wordInfoText"></span>
+    </div>
+  </div>
 
   <nav class="tab-bar" aria-label="Навигация">
     <button class="tab-item active" type="button" data-tab="test">
@@ -215,6 +253,6 @@
     </button>
   </nav>
 
-  <script src="app.js?v=30"></script>
+  <script src="app.js?v=36"></script>
 </body>
 </html>
