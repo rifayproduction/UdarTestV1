@@ -167,21 +167,21 @@ body[data-screen="result"] .screen {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .mode-select {
-  width: min(100%, 300px);
+  width: min(100%, 284px);
   display: grid;
   gap: 0;
 }
 
 .mode-trigger {
   width: 100%;
-  min-height: 76px;
+  min-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  padding: 12px 12px 12px 14px;
+  border-radius: 18px;
+  padding: 10px 11px 10px 13px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -201,7 +201,7 @@ body[data-screen="result"] .screen {
 }
 
 .mode-trigger-copy {
-  gap: 7px;
+  gap: 5px;
 }
 
 .mode-caption {
@@ -220,8 +220,8 @@ body[data-screen="result"] .screen {
 
 .mode-current-icon,
 .mode-option-icon {
-  width: 32px;
-  height: 32px;
+  width: 29px;
+  height: 29px;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
@@ -256,7 +256,7 @@ body[data-screen="result"] .screen {
 
 #modeLabel {
   overflow: hidden;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1.15;
   text-overflow: ellipsis;
@@ -390,9 +390,9 @@ body[data-screen="result"] .screen {
 }
 
 .quiz-length {
-  width: min(100%, 300px);
-  min-height: 58px;
-  padding: 9px 10px 9px 14px;
+  width: min(100%, 284px);
+  min-height: 50px;
+  padding: 7px 8px 7px 13px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 18px;
   display: flex;
@@ -432,8 +432,8 @@ body[data-screen="result"] .screen {
 }
 
 .quiz-length-option {
-  width: 42px;
-  height: 34px;
+  width: 37px;
+  height: 30px;
   border: 0;
   border-radius: 11px;
   background: transparent;
@@ -450,14 +450,14 @@ body[data-screen="result"] .screen {
 }
 
 .start-button {
-  width: min(100%, 300px);
-  min-height: 64px;
+  width: min(100%, 284px);
+  min-height: 56px;
   border: 0;
-  border-radius: 22px;
-  padding: 0 28px;
+  border-radius: 18px;
+  padding: 0 24px;
   background: var(--accent);
   color: var(--accent-text);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 16px 32px var(--shadow);
@@ -827,6 +827,47 @@ body[data-screen="result"] .screen {
   box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.14);
 }
 
+.dictionary-header {
+  display: grid;
+  gap: 12px;
+}
+
+.dictionary-filter {
+  height: 44px;
+  padding: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.dictionary-filter button {
+  min-width: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(247, 247, 242, 0.58);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.dictionary-filter button.active {
+  background: rgba(255, 255, 255, 0.13);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.dictionary-filter button:active {
+  transform: scale(0.98);
+}
+
 .dictionary-intro {
   display: grid;
   gap: 18px;
@@ -834,9 +875,9 @@ body[data-screen="result"] .screen {
 }
 
 .dictionary-empty-card {
-  min-height: 176px;
-  padding: 24px 20px;
-  border-radius: 20px;
+  min-height: 128px;
+  padding: 18px 18px;
+  border-radius: 18px;
   display: grid;
   justify-items: center;
   align-content: center;
@@ -848,9 +889,15 @@ body[data-screen="result"] .screen {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+.dictionary-empty-card .empty-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+}
+
 .dictionary-empty-icon svg {
-  width: 27px;
-  height: 27px;
+  width: 23px;
+  height: 23px;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -860,14 +907,14 @@ body[data-screen="result"] .screen {
 
 .dictionary-empty-card strong {
   color: var(--text);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
 }
 
 .dictionary-empty-card span:last-child {
-  max-width: 300px;
+  max-width: 280px;
   color: rgba(247, 247, 242, 0.64);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.45;
 }
@@ -982,12 +1029,12 @@ body[data-screen="result"] .screen {
 }
 
 .favorites-start {
-  width: min(100%, 300px);
-  min-height: 56px;
-  margin: 18px auto 4px;
-  border-radius: 18px;
+  width: min(100%, 250px);
+  min-height: 48px;
+  margin: 14px auto 2px;
+  border-radius: 16px;
   display: block;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .favorites-results {
@@ -1065,8 +1112,8 @@ body[data-screen="result"] .screen {
 }
 
 .favorite-row {
-  min-height: 64px;
-  padding: 12px 12px 12px 16px;
+  min-height: 56px;
+  padding: 10px 12px 10px 16px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.07)),
     rgba(255, 255, 255, 0.08);
@@ -1100,6 +1147,18 @@ body[data-screen="result"] .screen {
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.word-copy .word-source-badge {
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: rgba(255, 211, 77, 0.11);
+  color: rgba(255, 224, 111, 0.78);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
 }
 
 .word-info-sheet {
@@ -1296,10 +1355,16 @@ body[data-screen="result"] .screen {
   }
 
   .start-button {
-    width: min(100%, 280px);
-    min-height: 66px;
-    border-radius: 14px;
-    font-size: 20px;
+    width: min(100%, 270px);
+    min-height: 56px;
+    border-radius: 16px;
+    font-size: 18px;
+  }
+
+  .favorites-start {
+    width: min(100%, 250px);
+    min-height: 48px;
+    font-size: 15px;
   }
 
   .quiz-card {
