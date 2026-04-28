@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=36">
+  <link rel="stylesheet" href="styles.css?v=47">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -52,9 +52,9 @@
               </span>
               <span class="mode-option-text">
                 <strong>ЕГЭ слова</strong>
-                <small>Вся база для тренировки</small>
+                <small>Вся база ЕГЭ</small>
               </span>
-              <span class="mode-badge" id="allWordsCount">0</span>
+              <span class="mode-badge" id="egeWordsCount">0</span>
             </button>
             <button class="mode-option" type="button" data-mode="mistakes">
               <span class="mode-option-icon" aria-hidden="true">
@@ -95,9 +95,9 @@
               </span>
               <span class="mode-option-text">
                 <strong>Все слова</strong>
-                <small>Все сложные ударения</small>
+                <small>ЕГЭ и сложные ударения</small>
               </span>
-              <span class="mode-badge">500</span>
+              <span class="mode-badge" id="allWordsCount">0</span>
             </button>
           </div>
         </div>
@@ -153,6 +153,11 @@
           <span>Поиск</span>
           <input id="dictionarySearch" type="search" placeholder="Введите слово" autocomplete="off">
         </label>
+        <div class="dictionary-filter" aria-label="Фильтр словаря">
+          <button class="active" type="button" data-dictionary-filter="all">Все</button>
+          <button type="button" data-dictionary-filter="ege">ЕГЭ</button>
+          <button type="button" data-dictionary-filter="extra">Сложные</button>
+        </div>
       </div>
 
       <div class="dictionary-intro" id="dictionaryIntro">
@@ -253,6 +258,7 @@
     </button>
   </nav>
 
-  <script src="app.js?v=36"></script>
+  <script src="data/words.js?v=47"></script>
+  <script src="app.js?v=47"></script>
 </body>
 </html>
