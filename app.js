@@ -5,265 +5,34 @@ const QUIZ_LENGTH_STORAGE_KEY = "egeAccentQuizLength";
 const MISTAKES_STORAGE_KEY = "egeAccentMistakes";
 const FAVORITES_STORAGE_KEY = "egeAccentFavorites";
 
-const baseAccentWords = [
-  { correct: "аэропОрты", wrong: "аэропортЫ" },
-  { correct: "аэропОрт", wrong: "аэрОпорт" },
-  { correct: "бАнты", wrong: "бантЫ" },
-  { correct: "бОроду", wrong: "борОду" },
-  { correct: "бородА", wrong: "бОрода" },
-  { correct: "бухгАлтеров", wrong: "бухгалтерОв" },
-  { correct: "бухгАлтер", wrong: "бУхгалтер" },
-  { correct: "вероисповЕдание", wrong: "вероисповедАние" },
-  { correct: "водопровОд", wrong: "водопрОвод" },
-  { correct: "газопровОд", wrong: "газопрОвод" },
-  { correct: "граждАнство", wrong: "грАжданство" },
-  { correct: "дефИс", wrong: "дЕфис" },
-  { correct: "дешевИзна", wrong: "дешевизнА" },
-  { correct: "диспансЕр", wrong: "диспАнсер" },
-  { correct: "договорЁнность", wrong: "договОренность" },
-  { correct: "докумЕнт", wrong: "дОкумент" },
-  { correct: "досУг", wrong: "дОсуг" },
-  { correct: "еретИк", wrong: "ерЕтик" },
-  { correct: "жалюзИ", wrong: "жАлюзи" },
-  { correct: "знАчимость", wrong: "значИмость" },
-  { correct: "Иксы", wrong: "иксЫ" },
-  { correct: "каталОг", wrong: "катАлог" },
-  { correct: "квартАл", wrong: "квАртал" },
-  { correct: "киломЕтр", wrong: "килОметр" },
-  { correct: "кОнусов", wrong: "конусОв" },
-  { correct: "кОнус", wrong: "конУс" },
-  { correct: "корЫсть", wrong: "кОрысть" },
-  { correct: "крАны", wrong: "кранЫ" },
-  { correct: "кремЕнь", wrong: "крЕмень" },
-  { correct: "кремнЯ", wrong: "крЕмня" },
-  { correct: "лЕкторов", wrong: "лекторОв" },
-  { correct: "лОктя", wrong: "локтЯ" },
-  { correct: "локтЕй", wrong: "лОктей" },
-  { correct: "лыжнЯ", wrong: "лЫжня" },
-  { correct: "мЕстностей", wrong: "местностЕй" },
-  { correct: "мЕстность", wrong: "местнОсть" },
-  { correct: "намЕрение", wrong: "нАмерение" },
-  { correct: "нарОст", wrong: "нАрост" },
-  { correct: "нЕдруг", wrong: "недрУг" },
-  { correct: "недУг", wrong: "нЕдуг" },
-  { correct: "некролОг", wrong: "некрОлог" },
-  { correct: "нЕнависть", wrong: "ненавИсть" },
-  { correct: "нефтепровОд", wrong: "нефтепрОвод" },
-  { correct: "новостЕй", wrong: "нОвостей" },
-  { correct: "нОгтя", wrong: "ногтЯ" },
-  { correct: "ногтЕй", wrong: "нОгтей" },
-  { correct: "Отзыв", wrong: "отзЫв" },
-  { correct: "отзЫв", wrong: "Отзыв" },
-  { correct: "Отрочество", wrong: "отрОчество" },
-  { correct: "партЕр", wrong: "пАртер" },
-  { correct: "портфЕль", wrong: "пОртфель" },
-  { correct: "пОручни", wrong: "поручнИ" },
-  { correct: "придАное", wrong: "прИданое" },
-  { correct: "призЫв", wrong: "прИзыв" },
-  { correct: "свЁкла", wrong: "свеклА" },
-  { correct: "сирОты", wrong: "сИроты" },
-  { correct: "созЫв", wrong: "сОзыв" },
-  { correct: "сосредотОчение", wrong: "сосредоточЕние" },
-  { correct: "срЕдства", wrong: "средствА" },
-  { correct: "стАтуя", wrong: "статУя" },
-  { correct: "столЯр", wrong: "стОляр" },
-  { correct: "тамОжня", wrong: "тАможня" },
-  { correct: "тОрты", wrong: "тортЫ" },
-  { correct: "тУфля", wrong: "туфлЯ" },
-  { correct: "цемЕнт", wrong: "цЕмент" },
-  { correct: "цЕнтнер", wrong: "центнЕр" },
-  { correct: "цепОчка", wrong: "цЕпочка" },
-  { correct: "шАрфы", wrong: "шарфЫ" },
-  { correct: "шофЁр", wrong: "шОфер" },
-  { correct: "экспЕрт", wrong: "Эксперт" },
-  { correct: "вернА", wrong: "вЕрна" },
-  { correct: "знАчимый", wrong: "значИмый" },
-  { correct: "красИвее", wrong: "красивЕе" },
-  { correct: "красИвейший", wrong: "красивЕйший" },
-  { correct: "кУхонный", wrong: "кухОнный" },
-  { correct: "ловкА", wrong: "лОвка" },
-  { correct: "мозаИчный", wrong: "мозАичный" },
-  { correct: "оптОвый", wrong: "Оптовый" },
-  { correct: "прозорлИвый", wrong: "прозОрливый" },
-  { correct: "прозорлИва", wrong: "прозОрлива" },
-  { correct: "слИвовый", wrong: "сливОвый" },
-  { correct: "бралА", wrong: "брАла" },
-  { correct: "бралАсь", wrong: "брАлась" },
-  { correct: "взялА", wrong: "взЯла" },
-  { correct: "взялАсь", wrong: "взЯлась" },
-  { correct: "влилАсь", wrong: "влИлась" },
-  { correct: "ворвалАсь", wrong: "ворвАлась" },
-  { correct: "воспринЯть", wrong: "воспрИнять" },
-  { correct: "воспринялА", wrong: "воспрИняла" },
-  { correct: "воссоздалА", wrong: "воссоздАла" },
-  { correct: "вручИт", wrong: "врУчит" },
-  { correct: "гналА", wrong: "гнАла" },
-  { correct: "гналАсь", wrong: "гнАлась" },
-  { correct: "добралА", wrong: "добрАла" },
-  { correct: "добралАсь", wrong: "добрАлась" },
-  { correct: "дождалАсь", wrong: "дождАлась" },
-  { correct: "дозвонИтся", wrong: "дозвОнится" },
-  { correct: "дозИровать", wrong: "дозировАть" },
-];
-
-const additionalWordForms = [
-  "ждалА",
-  "жилОсь",
-  "закУпорить",
-  "занЯть",
-  "зАнял",
-  "занялА",
-  "зАняли",
-  "заперлА",
-  "запломбировАть",
-  "защемИт",
-  "звалА",
-  "звонИт",
-  "клАла",
-  "клЕить",
-  "крАлась",
-  "кровоточИть",
-  "лгалА",
-  "лилА",
-  "лилАсь",
-  "навралА",
-  "наделИт",
-  "надорвалАсь",
-  "назвалАсь",
-  "назвАлся",
-  "накренИтся",
-  "налилА",
-  "нарвалА",
-  "начАть",
-  "нАчал",
-  "началА",
-  "нАчали",
-  "обзвонИт",
-  "облегчИть",
-  "облегчИт",
-  "облилАсь",
-  "обнЯлась",
-  "обогналА",
-  "ободралА",
-  "ободрИть",
-  "ободрИт",
-  "ободрИться",
-  "ободрИтся",
-  "обострИть",
-  "одолжИть",
-  "одолжИт",
-  "озлОбить",
-  "оклЕить",
-  "окружИт",
-  "опОшлить",
-  "освЕдомиться",
-  "освЕдомится",
-  "отбылА",
-  "отдалА",
-  "откУпорить",
-  "отозвалА",
-  "отозвалАсь",
-  "перезвонИт",
-  "перелилА",
-  "перелИть",
-  "плодоносИть",
-  "пломбировАть",
-  "повторИт",
-  "позвалА",
-  "позвонИт",
-  "полилА",
-  "положИть",
-  "положИл",
-  "понЯть",
-  "понялА",
-  "послАла",
-  "прибЫть",
-  "прИбыл",
-  "прибылА",
-  "прИбыли",
-  "принЯть",
-  "прИнял",
-  "принялА",
-  "прИняли",
-  "рвалА",
-  "сверлИт",
-  "снялА",
-  "сорвалА",
-  "создалА",
-  "собралА",
-  "сорИт",
-  "убралА",
-  "углубИть",
-  "укрепИт",
-  "чЕрпать",
-  "щемИт",
-  "щЁлкать",
-  "закУпорив",
-  "начАв",
-  "начАвшись",
-  "отдАв",
-  "поднЯв",
-  "понЯв",
-  "прибЫв",
-  "создАв",
-  "довезЁнный",
-  "зАгнутый",
-  "зАнятый",
-  "занятА",
-  "зАпертый",
-  "заселЁнный",
-  "заселенА",
-  "кормЯщий",
-  "кровоточАщий",
-  "нажИвший",
-  "налИвший",
-  "нанЯвшийся",
-  "начАвший",
-  "нАчатый",
-  "низведЁнный",
-  "облегчЁнный",
-  "ободрЁнный",
-  "обострЁнный",
-  "отключЁнный",
-  "повторЁнный",
-  "поделЁнный",
-  "понЯвший",
-  "прИнятый",
-  "принятА",
-  "приручЁнный",
-  "прожИвший",
-  "снятА",
-  "сОгнутый",
-  "углублЁнный",
-  "вОвремя",
-  "дОверху",
-  "донЕльзя",
-  "дОнизу",
-  "дОсуха",
-  "зАсветло",
-  "зАтемно",
-  "красИвее",
-  "надОлго",
-  "ненадОлго",
-];
-
+const accentData = window.ACCENT_DATA || {};
+const baseAccentWords = accentData.baseWords || [];
+const additionalWordForms = accentData.additionalForms || [];
+const extraWordForms = accentData.extraForms || [];
 const additionalAccentWords = additionalWordForms.map((correct) => ({
   correct,
   wrong: makeWrongAccent(correct),
 }));
-
-const duplicateWordForms = new Set([
-  "аэропорты",
-  "бухгалтеров",
-  "конусов",
-  "местностей",
-]);
+const extraAccentWords = extraWordForms.map((correct) => ({
+  correct,
+  wrong: makeWrongAccent(correct),
+}));
+const duplicateWordForms = new Set(accentData.duplicateForms || []);
 
 const accentWords = dedupeWords(
   [...baseAccentWords, ...additionalAccentWords].filter(
     (word) => !duplicateWordForms.has(normalizeText(word.correct))
   )
 );
+const egeWordKeys = new Set(accentWords.map((word) => normalizeText(word.correct)));
+const extraWords = dedupeWords(
+  extraAccentWords.filter((word) => {
+    const key = normalizeText(word.correct);
+    return !duplicateWordForms.has(key) && !egeWordKeys.has(key);
+  })
+);
+const knownWords = dedupeWords([...accentWords, ...extraWords]);
+const wordInfo = accentData.info || {};
 
 const tabs = document.querySelectorAll("[data-tab]");
 const screens = document.querySelectorAll("[data-screen]");
@@ -283,6 +52,7 @@ const resultBackButton = document.getElementById("resultBackButton");
 const infoButton = document.getElementById("infoButton");
 const infoBackButton = document.getElementById("infoBackButton");
 const dictionarySearch = document.getElementById("dictionarySearch");
+const dictionaryFilterButtons = document.querySelectorAll("[data-dictionary-filter]");
 const dictionaryIntro = document.getElementById("dictionaryIntro");
 const dictionarySummary = document.getElementById("dictionarySummary");
 const dictionaryResults = document.getElementById("dictionaryResults");
@@ -303,6 +73,7 @@ const resultCard = document.querySelector(".result-card");
 const resultVerdict = document.getElementById("resultVerdict");
 const resultScore = document.getElementById("resultScore");
 const resultDetails = document.getElementById("resultDetails");
+const egeWordsCount = document.getElementById("egeWordsCount");
 const allWordsCount = document.getElementById("allWordsCount");
 const mistakesCount = document.getElementById("mistakesCount");
 const favoritesCount = document.getElementById("favoritesCount");
@@ -312,6 +83,7 @@ let quizQuestions = [];
 let quizIndex = 0;
 let answerLocked = false;
 let selectedMode = "all";
+let selectedDictionaryFilter = "all";
 let selectedQuizLength = loadQuizLength();
 let mistakes = loadMistakes();
 let favorites = loadFavorites();
@@ -350,13 +122,6 @@ const modeIconMarkup = {
       <path d="M18 8h1a1 1 0 0 1 1 1v11H8" />
     </svg>
   `,
-};
-
-const wordInfo = {
-  жалюзи: {
-    title: "жалюзи́",
-    text: "Жалюзи — это оконные шторы из тонких пластин, которые поворачиваются и регулируют свет. Слово пришло из французского языка и в русском языке не изменяется по падежам. Норма произношения — с ударением на последний слог: жалюзи́.",
-  },
 };
 
 if (tg) {
@@ -559,12 +324,12 @@ function updateMistakeStats(word, isCorrect) {
 
 function getMistakeWords() {
   const mistakeKeys = new Set(Object.keys(mistakes));
-  return accentWords.filter((word) => mistakeKeys.has(normalizeText(word.correct)));
+  return knownWords.filter((word) => mistakeKeys.has(normalizeText(word.correct)));
 }
 
 function getFavoriteWords() {
   const favoriteKeys = new Set(Object.keys(favorites));
-  return accentWords.filter((word) => favoriteKeys.has(normalizeText(word.correct)));
+  return knownWords.filter((word) => favoriteKeys.has(normalizeText(word.correct)));
 }
 
 function getSelectedModeWords() {
@@ -577,7 +342,7 @@ function getSelectedModeWords() {
   }
 
   if (selectedMode === "allWords") {
-    return accentWords;
+    return knownWords;
   }
 
   return accentWords;
@@ -585,6 +350,22 @@ function getSelectedModeWords() {
 
 function getWordInfo(word) {
   return wordInfo[normalizeText(word.correct)];
+}
+
+function getDictionaryWords() {
+  if (selectedDictionaryFilter === "ege") {
+    return accentWords;
+  }
+
+  if (selectedDictionaryFilter === "extra") {
+    return extraWords;
+  }
+
+  return knownWords;
+}
+
+function getWordSource(word) {
+  return egeWordKeys.has(normalizeText(word.correct)) ? "ЕГЭ" : "Сложное";
 }
 
 function openWordInfo(info) {
@@ -695,8 +476,8 @@ function getModeDetails(mode) {
     allWords: {
       icon: "allWords",
       label: "Все слова",
-      meta: "Все сложные ударения",
-      count: 500,
+      meta: formatWordCount(knownWords.length),
+      count: knownWords.length,
       empty: false,
     },
   };
@@ -709,8 +490,12 @@ function renderModeState() {
   const favoriteCount = getFavoriteWords().length;
   const currentMode = getModeDetails(selectedMode);
 
+  if (egeWordsCount) {
+    egeWordsCount.textContent = accentWords.length;
+  }
+
   if (allWordsCount) {
-    allWordsCount.textContent = accentWords.length;
+    allWordsCount.textContent = knownWords.length;
   }
 
   if (mistakesCount) {
@@ -821,7 +606,7 @@ function renderDictionary() {
     return;
   }
 
-  const words = accentWords.filter((word) => normalizeText(word.correct).includes(query));
+  const words = getDictionaryWords().filter((word) => normalizeText(word.correct).includes(query));
 
   if (dictionarySummary) {
     dictionarySummary.textContent = words.length
@@ -866,9 +651,19 @@ function renderDictionary() {
     }
 
     copy.append(wordLine);
+    const source = document.createElement("small");
+    source.className = "word-source-badge";
+    source.textContent = getWordSource(word);
+    copy.append(source);
 
     row.append(copy, createFavoriteButton(word));
     dictionaryResults.append(row);
+  });
+}
+
+function renderDictionaryFilter() {
+  dictionaryFilterButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.dictionaryFilter === selectedDictionaryFilter);
   });
 }
 
@@ -910,10 +705,8 @@ function renderFavorites() {
     const copy = document.createElement("span");
     copy.className = "word-copy";
     const text = document.createElement("span");
-    const note = document.createElement("small");
     text.textContent = formatStress(word.correct);
-    note.textContent = "сохраненное слово";
-    copy.append(text, note);
+    copy.append(text);
     row.append(copy, createFavoriteButton(word));
     favoritesResults.append(row);
   });
@@ -1101,16 +894,28 @@ quizFavoriteButton?.addEventListener("click", () => {
     toggleFavorite(quizQuestions[quizIndex]);
   }
 });
-dictionarySearch.addEventListener("input", renderDictionary);
+dictionarySearch.addEventListener("input", () => {
+  renderDictionaryFilter();
+  renderDictionary();
+});
+dictionaryFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedDictionaryFilter = button.dataset.dictionaryFilter;
+    renderDictionaryFilter();
+    renderDictionary();
+  });
+});
 popularWordButtons.forEach((button) => {
   button.addEventListener("click", () => {
     dictionarySearch.value = button.dataset.searchWord;
+    renderDictionaryFilter();
     renderDictionary();
     dictionarySearch.focus();
   });
 });
 wordInfoClose?.addEventListener("click", closeWordInfo);
 
+renderDictionaryFilter();
 renderDictionary();
 renderFavorites();
 setQuizLength(selectedQuizLength);
