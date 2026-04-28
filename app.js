@@ -40,6 +40,7 @@ const tabBar = document.querySelector(".tab-bar");
 const modeSelect = document.getElementById("modeSelect");
 const modeOptions = document.querySelectorAll("[data-mode]");
 const quizLengthOptions = document.querySelectorAll("[data-quiz-length]");
+const quizLengthControl = document.querySelector(".quiz-length");
 const modeTrigger = document.getElementById("modeTrigger");
 const modeIcon = document.getElementById("modeIcon");
 const modeLabel = document.getElementById("modeLabel");
@@ -866,7 +867,10 @@ quizLengthOptions.forEach((button) => {
 });
 
 document.addEventListener("click", (event) => {
-  if (modeSelect && !modeSelect.contains(event.target)) {
+  const clickedModeSelect = modeSelect?.contains(event.target);
+  const clickedQuizLength = quizLengthControl?.contains(event.target);
+
+  if (!clickedModeSelect && !clickedQuizLength) {
     setModeMenuOpen(false);
   }
 });
